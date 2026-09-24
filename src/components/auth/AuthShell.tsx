@@ -3,6 +3,8 @@ import { ChevronLeft } from "lucide-react";
 import { useCanGoBack, useRouter } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
 import authBg from "@/assets/auth-pool.jpg";
+import logoColor from "@/assets/bluecrest-logo.png";
+import logoWhite from "@/assets/bluecrest-logo-white.png";
 
 /** Sharp-corner primary CTA for auth / onboarding surfaces. Min 48pt height. */
 export function AuthButton({
@@ -120,30 +122,15 @@ export function BrandLogoMark({
   className?: string;
   variant?: "white" | "color";
 }) {
-  const light = variant === "white";
-
   return (
-    <div
-      className={cn("flex flex-col items-center text-center", className)}
+    <img
+      src={variant === "white" ? logoWhite : logoColor}
+      alt="Bluecrest Amenity Management"
+      width={width}
+      height={Math.round(width * 0.32)}
+      className={cn("h-auto max-w-full object-contain", className)}
       style={{ width }}
-    >
-      <span
-        className={cn(
-          "font-display text-[42px] leading-none tracking-tight",
-          light ? "text-white" : "text-[#093370]",
-        )}
-      >
-        Bluecrest
-      </span>
-      <span
-        className={cn(
-          "mt-2.5 text-[11px] font-semibold tracking-[0.28em] uppercase",
-          light ? "text-white/70" : "text-[#093370]/55",
-        )}
-      >
-        Amenity Management
-      </span>
-    </div>
+    />
   );
 }
 

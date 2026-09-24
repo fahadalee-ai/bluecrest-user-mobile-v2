@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useRef, useState } from "react";
 import { AuthButton } from "@/components/auth/AuthShell";
 import { cn } from "@/lib/utils";
+import { BrandLogoMark } from "@/components/auth/AuthShell";
 import { useApp } from "@/lib/app-state";
 import inspectImg from "@/assets/site-soho-house.jpg";
 import equipmentImg from "@/assets/onboarding-equipment.jpg";
@@ -110,9 +111,7 @@ function Onboarding() {
           className="flex shrink-0 items-center justify-between"
           style={{ height: "var(--nav-height)", minHeight: "var(--nav-height)" }}
         >
-          <span className="text-[12px] font-semibold tracking-[0.2em] text-white/70 uppercase">
-            Bluecrest
-          </span>
+          <BrandLogoMark width={120} variant="white" className="max-h-8 object-left object-contain" />
           <button
             type="button"
             onClick={goLogin}

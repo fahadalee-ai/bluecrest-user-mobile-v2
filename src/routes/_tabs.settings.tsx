@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
+import { BrandLogoMark } from "@/components/auth/AuthShell";
 import { Alert, ListGroup, ListRow, NavBar, Screen, SectionHeader } from "@/components/ios";
 import { brand } from "@/data/bluecrest";
 import { useApp } from "@/lib/app-state";
@@ -112,6 +113,11 @@ function SettingsScreen() {
           <ListGroup>
             <ListRow destructive title="Log Out" onClick={() => setConfirm(true)} />
           </ListGroup>
+        </div>
+
+        <div className="mt-8 flex flex-col items-center gap-2">
+          <BrandLogoMark width={150} variant="color" />
+          <p className="text-[12px] text-muted-foreground">Version {brand.version}</p>
         </div>
       </Screen>
 

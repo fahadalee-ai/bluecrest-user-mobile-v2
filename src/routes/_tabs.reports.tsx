@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { Card, Field, NavBar, Screen, SectionHeader, SelectField, inputClass } from "@/components/ios";
+import { BrandLogoMark } from "@/components/auth/AuthShell";
 import { DownloadButton } from "@/components/client/widgets";
 import { useApp } from "@/lib/app-state";
 
@@ -14,6 +15,9 @@ function ReportsHub() {
     <>
       <NavBar title="Reports & History" />
       <Screen>
+        <div className="mb-5 flex justify-center">
+          <BrandLogoMark width={160} variant="color" />
+        </div>
         <p className="mb-5 text-[15px] text-muted-foreground">
           Export reports for the properties on your Related Property Group account.
         </p>

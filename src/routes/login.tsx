@@ -111,12 +111,6 @@ function Login() {
         <AuthButton variant="ghost" onClick={() => navigate({ to: "/register" })}>
           Create Account
         </AuthButton>
-
-        <p className="text-center text-[13px] text-[#093370]/50">
-          <Link to="/access" className="min-h-11 inline-flex items-center font-semibold text-[#0258B8]">
-            Learn how to get access
-          </Link>
-        </p>
       </div>
     </AuthShell>
   );

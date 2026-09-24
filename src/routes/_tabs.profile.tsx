@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { Alert, Card, ListGroup, ListRow, NavBar, Screen } from "@/components/ios";
+import { BrandLogoMark } from "@/components/auth/AuthShell";
 import { IconTile } from "@/components/client/widgets";
 import { useApp } from "@/lib/app-state";
 import {
@@ -106,6 +107,10 @@ function Profile() {
             trailing={<ChevronRight className="h-4 w-4 text-muted-foreground" />}
           />
         </ListGroup>
+
+        <div className="mb-6 flex justify-center py-4">
+          <BrandLogoMark width={168} variant="color" />
+        </div>
 
         <ListGroup>
           <ListRow

@@ -1,7 +1,8 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { EmptyState, NavBar, Screen } from "@/components/ios";
 import { useApp } from "@/lib/app-state";
-import { Megaphone, MessagesSquare } from "lucide-react";
+import logoWhite from "@/assets/bluecrest-logo-white.png";
+import { MessagesSquare } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_tabs/messages")({
@@ -41,8 +42,8 @@ function MessagesList() {
                 )}
               >
                 {t.kind === "announcement" ? (
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center bg-navy text-white">
-                    <Megaphone className="h-5 w-5" />
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center bg-navy px-1">
+                    <img src={logoWhite} alt="" className="h-7 w-full object-contain" />
                   </span>
                 ) : t.avatar ? (
                   <img src={t.avatar} alt="" className="h-11 w-11 shrink-0 object-cover" />

@@ -178,13 +178,6 @@ function Register() {
         </AuthField>
 
         <AuthButton onClick={submit}>Create Account</AuthButton>
-
-        <p className="text-center text-[13px] leading-relaxed text-[#093370]/50">
-          Need an invite instead?{" "}
-          <Link to="/access" className="font-semibold text-[#0258B8]">
-            Learn how to get access
-          </Link>
-        </p>
       </div>
     </AuthShell>
   );

@@ -1,3 +1,4 @@
+import { BrandLogoMark } from "@/components/auth/AuthShell";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { Card, ListGroup, ListRow, NavBar, Screen, SectionHeader } from "@/components/ios";
@@ -86,9 +87,12 @@ function Help() {
           </ListGroup>
         </div>
 
-        <p className="mt-6 text-center text-[12px] text-muted-foreground">
-          {brand.company} · {brand.address}
-        </p>
+        <div className="mt-8 flex flex-col items-center gap-3">
+          <BrandLogoMark width={168} variant="color" />
+          <p className="text-center text-[12px] text-muted-foreground">
+            {brand.company} · {brand.address}
+          </p>
+        </div>
       </Screen>
     </>
   );
