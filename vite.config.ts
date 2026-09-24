@@ -1,7 +1,7 @@
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
 /** Public URL path (trailing slash). Must match Nginx `location` and `PREVIEW_URL` in preview.html. */
-const PRODUCTION_BASE = "/bluecrest-staff-mobile-v2/";
+const PRODUCTION_BASE = "/bluecrest-user-mobile-v2/";
 
 export default defineConfig({
   cloudflare: false,

@@ -1,41 +1,44 @@
 import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
 import {
   Badge,
-  Button,
   Card,
-  Alert,
   PullToRefresh,
   Screen,
   SectionHeader,
 } from "@/components/ios";
-import { MapCard } from "@/components/map-card";
-import { useApp, useElapsed } from "@/lib/app-state";
-import { activity, sites, staff } from "@/data/bluecrest";
+import { useApp } from "@/lib/app-state";
 import {
-  AlertTriangle,
+  activity,
+  greeting,
+  inspections,
+  issues,
+  properties,
+  propertyById,
+  resultLabel,
+  resultTone,
+  issueStatusTone,
+} from "@/data/bluecrest";
+import {
   Bell,
-  Camera,
   CheckCircle2,
-  ChevronDown,
   ChevronRight,
-  Clock,
-  Droplets,
+  ClipboardCheck,
+  FilePlus2,
   MessageCircle,
 } from "lucide-react";
 
 export const Route = createFileRoute("/_tabs/home")({
   head: () => ({
     meta: [
-      { title: "Today — Bluecrest Staff" },
+      { title: "Home — Bluecrest Client" },
       {
         name: "description",
-        content: "Your shift dashboard: clock in, site map, today's tasks and quick actions.",
+        content: "Portfolio status, recent inspections, open issues and a direct line to Bluecrest.",
       },
-      { property: "og:title", content: "Today — Bluecrest Staff" },
+      { property: "og:title", content: "Home — Bluecrest Client" },
       {
         property: "og:description",
-        content: "Clock in, review today's tasks and submit verifications from your dashboard.",
+        content: "See whether everything is okay at your properties, at a glance.",
       },
     ],
   }),
@@ -44,210 +47,183 @@ export const Route = createFileRoute("/_tabs/home")({
 
 function HomeScreen() {
   const navigate = useNavigate();
-  const { clockedInAt, clockIn, clockOut, activeSiteId, setActiveSiteId, tasks, notifications } =
-    useApp();
-  const elapsed = useElapsed(clockedInAt);
-  const [showSitePicker, setShowSitePicker] = useState(false);
-  const [confirmOut, setConfirmOut] = useState(false);
-
-  const site = sites.find((s) => s.id === activeSiteId) ?? sites[0]!;
-  const todayTasks = tasks.filter((t) => t.siteId === site.id);
+  const { client, notifications, requests } = useApp();
   const unread = notifications.filter((n) => n.unread).length;
+  const openIssues = issues.filter((i) => i.status !== "Resolved");
+  const pendingRequests = requests.filter((r) => r.status !== "Completed");
+  const attention = properties.filter((p) => p.compliance === "attention").length;
+  const recentInspections = inspections.slice(0, 4);
 
   return (
     <Screen className="ios-status">
       <PullToRefresh />
-      <header className="mb-7 flex items-start justify-between gap-3">
-        <div>
-          <p className="text-[13px] text-muted-foreground">Friday, August 7</p>
+      <header className="mb-6 flex items-start justify-between gap-3">
+        <div className="min-w-0">
           <h1 className="text-large-title text-navy">
-            Good morning, {staff.firstName}
+            {greeting()}, {client.firstName}
           </h1>
+          <p className="mt-1 text-[15px] text-muted-foreground">{client.company}</p>
         </div>
-        <Link
-          to="/notifications"
-          aria-label="Notifications"
-          className="relative flex h-11 w-11 items-center justify-center bg-card text-navy shadow-sm"
-        >
-          <Bell className="h-5 w-5" />
-          {unread > 0 && (
-            <span className="absolute top-1.5 right-1.5 flex h-4 min-w-4 items-center justify-center bg-danger px-1 text-[10px] font-bold text-primary-foreground">
-              {unread}
-            </span>
-          )}
-        </Link>
+        <div className="flex shrink-0 items-center gap-2">
+          <Link
+            to="/notifications"
+            aria-label="Notifications"
+            className="relative flex h-11 w-11 items-center justify-center bg-card text-navy shadow-sm"
+          >
+            <Bell className="h-5 w-5" />
+            {unread > 0 && (
+              <span className="absolute top-1.5 right-1.5 flex h-4 min-w-4 items-center justify-center bg-danger px-1 text-[10px] font-bold text-primary-foreground">
+                {unread}
+              </span>
+            )}
+          </Link>
+          <Link
+            to="/profile"
+            aria-label="Profile and account"
+            className="flex h-11 w-11 items-center justify-center overflow-hidden bg-card shadow-sm"
+          >
+            <img src={client.avatar} alt="" className="h-full w-full object-cover" />
+          </Link>
+        </div>
       </header>
 
-      {/* Clock in / out */}
-      <Card className="mb-4">
-        <div className="mb-3 flex items-center justify-between">
-          <Badge tone={clockedInAt ? "green" : "neutral"}>
-            {clockedInAt ? "On Shift" : "Not Clocked In"}
-          </Badge>
-          <span className="text-[13px] text-muted-foreground">9:00 AM – 7:00 PM</span>
-        </div>
-
-        <button
-          type="button"
-          onClick={() => setShowSitePicker((v) => !v)}
-          className="flex min-h-11 w-full items-center justify-between text-left"
-        >
-          <span>
-            <span className="block text-[17px] font-semibold text-foreground">{site.name}</span>
-            <span className="block text-[13px] text-muted-foreground">{site.address}</span>
-          </span>
-          <ChevronDown className="h-5 w-5 shrink-0 text-primary" />
-        </button>
-
-        {showSitePicker && (
-          <div className="mt-2 overflow-hidden border border-border duration-200 animate-in fade-in slide-in-from-top-1">
-            {sites.map((s) => (
-              <button
-                key={s.id}
-                type="button"
-                onClick={() => {
-                  setActiveSiteId(s.id);
-                  setShowSitePicker(false);
-                }}
-                className="flex min-h-11 w-full items-center justify-between px-3 text-left text-[15px] active:bg-muted"
-              >
-                {s.name}
-                {s.id === site.id && <CheckCircle2 className="h-4 w-4 text-primary" />}
-              </button>
-            ))}
-          </div>
-        )}
-
-        {clockedInAt && (
-          <div className="mt-3 flex items-center gap-2 bg-success-soft px-3 py-2 text-success">
-            <Clock className="h-4 w-4" />
-            <span className="font-mono text-[17px] font-semibold tabular-nums">{elapsed}</span>
-            <span className="text-[13px]">on shift</span>
-          </div>
-        )}
-
-        <div className="mt-4">
-          {clockedInAt ? (
-            <Button variant="danger" onClick={() => setConfirmOut(true)}>
-              Clock Out
-            </Button>
-          ) : (
-            <Button
-              onClick={() => {
-                navigator.geolocation?.getCurrentPosition(
-                  () => undefined,
-                  () => undefined,
-                );
-                clockIn(site.id);
-              }}
-            >
-              Clock In
-            </Button>
-          )}
-          <p className="mt-2 text-center text-[12px] text-muted-foreground">
-            Location is verified against the site geofence at clock-in.
+      <Link to="/properties" className="mb-4 block">
+        <div className="bg-navy px-5 py-5 text-navy-foreground shadow-[0_1px_2px_rgba(9,51,112,0.12)]">
+          <p className="text-[13px] tracking-wide text-white/70 uppercase">Portfolio</p>
+          <p className="mt-1 flex items-center gap-2 font-display text-[28px] leading-tight">
+            {properties.length} Properties ·{" "}
+            {attention ? "1 Needs Attention" : "All Compliant"}
+            {attention ? (
+              <span className="inline-block h-2.5 w-2.5 bg-warning" />
+            ) : (
+              <CheckCircle2 className="h-5 w-5 text-success" />
+            )}
           </p>
         </div>
-      </Card>
-
-      {/* Map */}
-      <SectionHeader>Live Location</SectionHeader>
-      <Link to="/site/$siteId" params={{ siteId: site.id }} className="mb-5 block">
-        <MapCard siteName={site.name} showGuard={!!clockedInAt} />
       </Link>
 
-      {/* Tasks */}
+      <div className="mb-6 grid grid-cols-3 gap-2">
+        {[
+          { l: "Open Issues", v: String(openIssues.length) },
+          { l: "Pending Requests", v: String(pendingRequests.length) },
+          { l: "Last Inspection", v: "Today" },
+        ].map((s) => (
+          <Card key={s.l} className="p-3 text-center">
+            <p className="text-[18px] font-bold text-navy">{s.v}</p>
+            <p className="mt-0.5 text-[11px] leading-tight text-muted-foreground">{s.l}</p>
+          </Card>
+        ))}
+      </div>
+
       <SectionHeader
         action={
-          <Link to="/tasks" className="text-[13px] font-semibold text-primary">
-            See All Tasks
+          <Link to="/inspections" className="text-[13px] font-semibold text-primary">
+            See all
           </Link>
         }
       >
-        Today's Tasks
+        Recent Inspections
       </SectionHeader>
-      <Card className="mb-5 p-0">
-        <div className="divide-y divide-border/70">
-          {todayTasks.slice(0, 4).map((t) => (
+      <div className="mb-6 flex gap-3 overflow-x-auto hide-scrollbar">
+        {recentInspections.map((insp) => {
+          const prop = propertyById(insp.propertyId);
+          return (
             <Link
-              key={t.id}
-              to="/task/$taskId"
-              params={{ taskId: t.id }}
-              className="flex min-h-[52px] items-center gap-3 px-4 py-3 active:bg-muted"
+              key={insp.id}
+              to="/inspection/$inspectionId"
+              params={{ inspectionId: insp.id }}
+              className="w-[220px] shrink-0 overflow-hidden border border-border/70 bg-card"
             >
-              <span className="min-w-0 flex-1">
-                <span className="block truncate text-[15px] font-medium">{t.name}</span>
-                <span className="block text-[12px] text-muted-foreground">
-                  {t.completedTime ? `Completed ${t.completedTime}` : `Due ${t.dueTime}`}
+              <img src={prop?.photo} alt="" className="h-28 w-full object-cover" />
+              <div className="p-3">
+                <p className="truncate text-[15px] font-semibold text-navy">{prop?.name}</p>
+                <p className="mt-0.5 text-[12px] text-muted-foreground">
+                  {insp.date} · {insp.time}
+                </p>
+                <div className="mt-2">
+                  <Badge tone={resultTone(insp.result)}>{resultLabel(insp.result)}</Badge>
+                </div>
+              </div>
+            </Link>
+          );
+        })}
+      </div>
+
+      <SectionHeader
+        action={
+          <Link to="/requests" className="text-[13px] font-semibold text-primary">
+            See all
+          </Link>
+        }
+      >
+        Open Issues
+      </SectionHeader>
+      <Card className="mb-6 p-0">
+        {openIssues.length === 0 ? (
+          <p className="px-4 py-5 text-[15px] text-muted-foreground">No open issues.</p>
+        ) : (
+          <div className="divide-y divide-border/70">
+            {openIssues.map((iss) => (
+              <Link
+                key={iss.id}
+                to="/issue/$issueId"
+                params={{ issueId: iss.id }}
+                className="flex min-h-[52px] items-center gap-3 px-4 py-3 active:bg-muted"
+              >
+                <span className="min-w-0 flex-1">
+                  <span className="block truncate text-[15px] font-medium">{iss.title}</span>
+                  <span className="block text-[12px] text-muted-foreground">
+                    {propertyById(iss.propertyId)?.name}
+                  </span>
                 </span>
-              </span>
-              <TaskBadge status={t.status} />
-              <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                <Badge tone={issueStatusTone(iss.status)}>{iss.status}</Badge>
+                <ChevronRight className="h-4 w-4 text-muted-foreground" />
+              </Link>
+            ))}
+          </div>
+        )}
+      </Card>
+
+      <SectionHeader>Recent Activity</SectionHeader>
+      <Card className="mb-6 p-0">
+        <div className="divide-y divide-border/70">
+          {activity.map((a) => (
+            <Link
+              key={a.id}
+              to={a.href.to}
+              params={a.href.params as never}
+              className="flex items-center gap-3 px-4 py-3 active:bg-muted"
+            >
+              <CheckCircle2 className="h-4 w-4 shrink-0 text-primary" />
+              <span className="flex-1 text-[15px]">{a.text}</span>
+              <span className="text-[12px] text-muted-foreground">{a.time}</span>
             </Link>
           ))}
         </div>
       </Card>
 
-      {/* Quick actions */}
       <SectionHeader>Quick Actions</SectionHeader>
-      <div className="mb-5 grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-3 gap-2">
         <QuickAction
-          icon={<Droplets className="h-5 w-5" />}
-          label="Submit Water Test"
-          onClick={() => navigate({ to: "/water-test", search: { siteId: site.id } })}
+          icon={<FilePlus2 className="h-5 w-5" />}
+          label="Submit Service Request"
+          onClick={() => navigate({ to: "/request-new" })}
         />
         <QuickAction
-          icon={<Camera className="h-5 w-5" />}
-          label="Take Photo"
-          onClick={() => navigate({ to: "/camera" })}
+          icon={<ClipboardCheck className="h-5 w-5" />}
+          label="View Latest Report"
+          onClick={() =>
+            navigate({ to: "/inspection/$inspectionId", params: { inspectionId: "insp-today" } })
+          }
         />
         <QuickAction
           icon={<MessageCircle className="h-5 w-5" />}
-          label="Message Supervisor"
+          label="Message Bluecrest"
           onClick={() => navigate({ to: "/thread/$threadId", params: { threadId: "dana" } })}
         />
-        <QuickAction
-          icon={<AlertTriangle className="h-5 w-5" />}
-          label="Report Incident"
-          onClick={() => navigate({ to: "/incident-new" })}
-        />
       </div>
-
-      {/* Recent activity */}
-      <SectionHeader>Recent Activity</SectionHeader>
-      <Card className="p-0">
-        <div className="divide-y divide-border/70">
-          {activity.map((a) => (
-            <div key={a.id} className="flex items-center gap-3 px-4 py-3">
-              <CheckCircle2 className="h-4 w-4 shrink-0 text-success" />
-              <span className="flex-1 text-[15px]">{a.text}</span>
-              <span className="text-[12px] text-muted-foreground">{a.time}</span>
-            </div>
-          ))}
-        </div>
-      </Card>
-
-      <Alert
-        open={confirmOut}
-        title="Clock out for the day?"
-        message="Your shift timer will stop and your hours will be logged."
-        confirmLabel="Clock Out"
-        destructive
-        onCancel={() => setConfirmOut(false)}
-        onConfirm={() => {
-          clockOut();
-          setConfirmOut(false);
-        }}
-      />
     </Screen>
   );
-}
-
-export function TaskBadge({ status }: { status: string }) {
-  if (status === "completed") return <Badge tone="green">Completed</Badge>;
-  if (status === "review") return <Badge tone="amber">Awaiting Review</Badge>;
-  if (status === "due") return <Badge tone="red">Due Now</Badge>;
-  return <Badge>Pending</Badge>;
 }
 
 function QuickAction({
@@ -263,12 +239,10 @@ function QuickAction({
     <button
       type="button"
       onClick={onClick}
-      className="flex min-h-[88px] flex-col items-start justify-between border border-border/70 bg-card p-3.5 text-left transition-transform duration-200 active:scale-[0.98]"
+      className="flex min-h-[108px] flex-col items-start justify-between border border-border/70 bg-card p-3 text-left transition-transform duration-200 active:scale-[0.98]"
     >
-      <span className="flex h-9 w-9 items-center justify-center bg-accent text-primary">
-        {icon}
-      </span>
-      <span className="text-[15px] leading-tight font-semibold text-foreground">{label}</span>
+      <span className="flex h-9 w-9 items-center justify-center bg-accent text-primary">{icon}</span>
+      <span className="text-[13px] leading-tight font-semibold text-foreground">{label}</span>
     </button>
   );
 }

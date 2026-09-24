@@ -1,26 +1,12 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { toast } from "sonner";
 import { Alert, ListGroup, ListRow, NavBar, Screen, SectionHeader } from "@/components/ios";
-import { brand, staff } from "@/data/bluecrest";
+import { brand } from "@/data/bluecrest";
 import { useApp } from "@/lib/app-state";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_tabs/settings")({
-  head: () => ({
-    meta: [
-      { title: "Settings — Bluecrest Staff" },
-      {
-        name: "description",
-        content: "Manage notifications, location permissions, appearance and account preferences.",
-      },
-      { property: "og:title", content: "Settings — Bluecrest Staff" },
-      {
-        property: "og:description",
-        content: "Notifications, location permissions and account preferences.",
-      },
-    ],
-  }),
+  head: () => ({ meta: [{ title: "Settings — Bluecrest Client" }] }),
   component: SettingsScreen,
 });
 
@@ -57,69 +43,69 @@ function Toggle({
 
 function SettingsScreen() {
   const navigate = useNavigate();
-  const { signOut } = useApp();
-  const [push, setPush] = useState(true);
-  const [shiftReminders, setShiftReminders] = useState(true);
-  const [taskAlerts, setTaskAlerts] = useState(true);
-  const [messages, setMessages] = useState(true);
-  const [location, setLocation] = useState(true);
+  const { signOut, notifPrefs, setNotifPref, client } = useApp();
   const [confirm, setConfirm] = useState(false);
 
   return (
     <>
       <NavBar title="Settings" />
       <Screen>
-        <SectionHeader>Notifications</SectionHeader>
+        <SectionHeader>Push notifications</SectionHeader>
         <ListGroup>
           <ListRow
-            title="Push Notifications"
-            trailing={<Toggle checked={push} onChange={setPush} label="Push notifications" />}
-          />
-          <ListRow
-            title="Shift Reminders"
-            subtitle="30 minutes before each shift"
+            title="New Inspection"
             trailing={
-              <Toggle checked={shiftReminders} onChange={setShiftReminders} label="Shift reminders" />
+              <Toggle
+                checked={notifPrefs.inspections}
+                onChange={(v) => setNotifPref("inspections", v)}
+                label="New inspection"
+              />
             }
           />
           <ListRow
-            title="Task Alerts"
-            trailing={<Toggle checked={taskAlerts} onChange={setTaskAlerts} label="Task alerts" />}
+            title="New Issue"
+            trailing={
+              <Toggle checked={notifPrefs.issues} onChange={(v) => setNotifPref("issues", v)} label="New issue" />
+            }
           />
           <ListRow
-            title="Message Alerts"
-            trailing={<Toggle checked={messages} onChange={setMessages} label="Message alerts" />}
+            title="Work Completed"
+            trailing={
+              <Toggle checked={notifPrefs.work} onChange={(v) => setNotifPref("work", v)} label="Work completed" />
+            }
+          />
+          <ListRow
+            title="Request Updates"
+            trailing={
+              <Toggle
+                checked={notifPrefs.requests}
+                onChange={(v) => setNotifPref("requests", v)}
+                label="Request updates"
+              />
+            }
+          />
+          <ListRow
+            title="Announcements"
+            trailing={
+              <Toggle
+                checked={notifPrefs.announcements}
+                onChange={(v) => setNotifPref("announcements", v)}
+                label="Announcements"
+              />
+            }
           />
         </ListGroup>
 
-        <SectionHeader>Permissions</SectionHeader>
+        <SectionHeader>Preferences</SectionHeader>
         <ListGroup>
-          <ListRow
-            title="Location Access"
-            subtitle="Required for clock-in and photo verification"
-            trailing={<Toggle checked={location} onChange={setLocation} label="Location access" />}
-          />
-          <ListRow
-            title="Camera Access"
-            subtitle="Granted"
-            trailing={<span className="text-[15px] text-muted-foreground">Granted</span>}
-          />
-        </ListGroup>
-
-        <SectionHeader>Account</SectionHeader>
-        <ListGroup>
-          <ListRow title="Signed in as" subtitle={staff.email} />
-          <ListRow
-            title="Change Password"
-            onClick={() => toast.info("A reset link has been sent to your email")}
-          />
+          <ListRow title="Language" subtitle="English" trailing={<span className="text-[15px] text-muted-foreground">Default</span>} />
+          <ListRow title="Signed in as" subtitle={client.email} />
           <ListRow title="App Version" trailing={<span className="text-[15px] text-muted-foreground">{brand.version}</span>} />
         </ListGroup>
 
-        <SectionHeader>Legal</SectionHeader>
+        <SectionHeader>Support</SectionHeader>
         <ListGroup>
-          <ListRow title="Privacy Policy" onClick={() => toast.info("Opening privacy policy")} />
-          <ListRow title="Terms of Service" onClick={() => toast.info("Opening terms of service")} />
+          <ListRow title="Help & Support" to="/help" />
         </ListGroup>
 
         <div className="mt-4">
@@ -132,7 +118,7 @@ function SettingsScreen() {
       <Alert
         open={confirm}
         title="Log out of Bluecrest?"
-        message="You'll need to sign in again to continue your shift."
+        message="You'll need to sign in again to view your properties."
         confirmLabel="Log Out"
         destructive
         onCancel={() => setConfirm(false)}

@@ -1,25 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { Card, ListGroup, ListRow, NavBar, Screen, SectionHeader } from "@/components/ios";
-import { brand, faqs, supervisor } from "@/data/bluecrest";
+import { brand, faqs, representative } from "@/data/bluecrest";
 import { ChevronDown, Mail, MessageCircle, Phone } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_tabs/help")({
-  head: () => ({
-    meta: [
-      { title: "Help & Support — Bluecrest Staff" },
-      {
-        name: "description",
-        content: "Answers to common lifeguard app questions plus direct lines to your supervisor and the Bluecrest office.",
-      },
-      { property: "og:title", content: "Help & Support — Bluecrest Staff" },
-      {
-        property: "og:description",
-        content: "FAQs and direct contacts for supervisor and office support.",
-      },
-    ],
-  }),
+  head: () => ({ meta: [{ title: "Help & Support — Bluecrest Client" }] }),
   component: Help,
 });
 
@@ -57,7 +44,7 @@ function Help() {
           ))}
         </div>
 
-        <SectionHeader>Contact</SectionHeader>
+        <SectionHeader>Contact Bluecrest</SectionHeader>
         <ListGroup>
           <ListRow
             to="/thread/$threadId"
@@ -67,8 +54,8 @@ function Help() {
                 <MessageCircle className="h-4 w-4" />
               </span>
             }
-            title={`Message ${supervisor.name}`}
-            subtitle={supervisor.role}
+            title={`Message ${representative.name}`}
+            subtitle={representative.title}
           />
         </ListGroup>
 
@@ -92,7 +79,7 @@ function Help() {
                     <Mail className="h-4 w-4" />
                   </span>
                 }
-                title="Email Support"
+                title="Email Client Services"
                 subtitle={brand.email}
               />
             </a>
@@ -100,7 +87,7 @@ function Help() {
         </div>
 
         <p className="mt-6 text-center text-[12px] text-muted-foreground">
-          {brand.company} · {brand.website} · v{brand.version}
+          {brand.company} · {brand.address}
         </p>
       </Screen>
     </>

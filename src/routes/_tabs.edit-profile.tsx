@@ -2,39 +2,25 @@ import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
 import { Button, Field, NavBar, Screen, StickyFooter, inputClass } from "@/components/ios";
-import { staff } from "@/data/bluecrest";
+import { useApp } from "@/lib/app-state";
 import { Camera } from "lucide-react";
 
 export const Route = createFileRoute("/_tabs/edit-profile")({
-  head: () => ({
-    meta: [
-      { title: "Edit Profile — Bluecrest Staff" },
-      {
-        name: "description",
-        content: "Update your contact details, profile photo and emergency contact information.",
-      },
-      { property: "og:title", content: "Edit Profile — Bluecrest Staff" },
-      {
-        property: "og:description",
-        content: "Update contact details, profile photo and emergency contact.",
-      },
-    ],
-  }),
+  head: () => ({ meta: [{ title: "Edit Contact Info — Bluecrest Client" }] }),
   component: EditProfile,
 });
 
 function EditProfile() {
   const router = useRouter();
+  const { client, updateClient } = useApp();
   const fileRef = useRef<HTMLInputElement>(null);
-  const [avatar, setAvatar] = useState(staff.avatar);
-  const [name, setName] = useState(staff.name);
-  const [phone, setPhone] = useState(staff.phone);
-  const [ecName, setEcName] = useState(staff.emergencyContactName);
-  const [ecPhone, setEcPhone] = useState(staff.emergencyContactPhone);
+  const [avatar, setAvatar] = useState(client.avatar);
+  const [name, setName] = useState(client.name);
+  const [phone, setPhone] = useState(client.phone);
 
   return (
     <>
-      <NavBar title="Edit Profile" />
+      <NavBar title="Edit Contact Info" />
       <Screen>
         <div className="mb-6 flex flex-col items-center">
           <button
@@ -57,9 +43,6 @@ function EditProfile() {
               if (f) setAvatar(URL.createObjectURL(f));
             }}
           />
-          <p className="mt-2 text-[12px] text-muted-foreground">
-            Profile photos may be uploaded from your device.
-          </p>
         </div>
 
         <div className="space-y-4">
@@ -74,26 +57,21 @@ function EditProfile() {
               onChange={(e) => setPhone(e.target.value)}
             />
           </Field>
-          <Field label="Email" hint="Contact your supervisor to update this">
-            <input className={inputClass} value={staff.email} disabled />
-          </Field>
-          <Field label="Emergency Contact Name">
-            <input className={inputClass} value={ecName} onChange={(e) => setEcName(e.target.value)} />
-          </Field>
-          <Field label="Emergency Contact Phone">
-            <input
-              className={inputClass}
-              inputMode="tel"
-              value={ecPhone}
-              onChange={(e) => setEcPhone(e.target.value)}
-            />
+          <Field label="Email" hint="Email may be managed by Bluecrest. Contact Client Services to update.">
+            <input className={inputClass} value={client.email} disabled />
           </Field>
         </div>
       </Screen>
       <StickyFooter>
         <Button
           onClick={() => {
-            toast.success("Profile updated");
+            updateClient({
+              name,
+              firstName: name.split(" ")[0] ?? name,
+              phone,
+              avatar,
+            });
+            toast.success("Contact info updated");
             router.history.back();
           }}
         >

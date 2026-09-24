@@ -1,900 +1,687 @@
 import siteManhattan from "@/assets/site-manhattan-park.jpg";
 import siteSoho from "@/assets/site-soho-house.jpg";
-import siteScott from "@/assets/auth-pool.jpg";
-import avatarMarcus from "@/assets/avatar-marcus.jpg";
+import siteBruckner from "@/assets/site-bruckner.jpg";
+import avatarSarah from "@/assets/avatar-sarah.jpg";
 import avatarDana from "@/assets/avatar-dana.jpg";
+import photoOpening from "@/assets/site-manhattan-park.jpg";
+import photoEquipment from "@/assets/onboarding-equipment.jpg";
+import photoChemical from "@/assets/photo-chemical.jpg";
+import photoDeck from "@/assets/site-soho-house.jpg";
+import photoFilterBefore from "@/assets/onboarding-equipment.jpg";
+import photoFilterAfter from "@/assets/site-manhattan-park.jpg";
 
 export const brand = {
   company: "Bluecrest Amenity Management",
   address: "105-25 91st St, Ozone Park, NY 11417",
   phone: "(718) 555-0142",
-  email: "office@bluecrestamenity.com",
+  email: "clients@bluecrestamenity.com",
   website: "bluecrestamenity.com",
   version: "1.0.0",
 };
 
-export const staff = {
-  id: "BC-1042",
-  name: "Marcus Bennett",
-  firstName: "Marcus",
-  role: "Certified Lifeguard",
-  email: "m.bennett@bluecrestamenity.com",
-  phone: "(917) 555-0188",
-  avatar: avatarMarcus,
-  emergencyContactName: "Alicia Bennett",
-  emergencyContactPhone: "(917) 555-0132",
-  stats: { attendance: "98%", tasksCompleted: 142, onTime: "96%" },
+/** App “today” for demo timestamps — aligned with the rest of the Bluecrest product family. */
+export const appToday = new Date(2026, 7, 6); // Thu Aug 6, 2026
+
+export const client = {
+  id: "CL-2048",
+  name: "Sarah Kim",
+  firstName: "Sarah",
+  title: "Property Manager",
+  company: "Related Property Group",
+  email: "s.kim@related.com",
+  phone: "(212) 555-0194",
+  avatar: avatarSarah,
+  billingAddress: "60 Columbus Circle, New York, NY 10023",
 };
 
-export const supervisor = {
+export const representative = {
+  id: "dana",
   name: "Dana Reyes",
-  role: "Site Supervisor",
+  title: "Field Supervisor",
+  role: "Field Supervisor",
   avatar: avatarDana,
   phone: "(718) 555-0177",
+  email: "d.reyes@bluecrestamenity.com",
 };
 
-export type Site = {
+export type ComplianceStatus = "compliant" | "attention";
+
+export type AmenityType = "Main Pool" | "Spa" | "Kiddie Pool" | "Rooftop Pool";
+
+export type WaterReading = {
+  time: string;
+  date: string;
+  chlorine: number;
+  ph: number;
+  temp: number;
+  status: "ok" | "watch";
+};
+
+export type Amenity = {
+  id: string;
+  propertyId: string;
+  name: string;
+  type: AmenityType;
+  photo: string;
+  waterStatus: "safe" | "watch";
+  lastTested: string;
+  lastTestedLabel: string;
+  readings: { chlorine: number; ph: number; temp: number };
+  history: WaterReading[];
+};
+
+export type Property = {
   id: string;
   name: string;
   address: string;
   photo: string;
-  shiftStatus: "today" | "scheduled" | "none";
-  shiftStatusLabel: string;
-  waterSchedule: string;
-  notes: string;
+  compliance: ComplianceStatus;
+  amenityIds: string[];
   coords: { lat: number; lng: number };
-  geofenceRadius: number;
+  mapsQuery: string;
 };
 
-export const sites: Site[] = [
+export const properties: Property[] = [
   {
     id: "manhattan-park",
     name: "Manhattan Park Pool Club",
     address: "40 River Rd, Roosevelt Island, NY 10044",
     photo: siteManhattan,
-    shiftStatus: "today",
-    shiftStatusLabel: "Today's Shift",
-    waterSchedule: "Every hour, 9:00 AM – 7:00 PM",
-    notes:
-      "Gate code: 4471. Equipment room is behind the cabana bar. Chemical storage key is on the red lanyard in the guard office.",
+    compliance: "compliant",
+    amenityIds: ["mp-main", "mp-spa"],
     coords: { lat: 40.7616, lng: -73.9505 },
-    geofenceRadius: 150,
+    mapsQuery: "40 River Rd, Roosevelt Island, NY 10044",
   },
   {
     id: "soho-house",
     name: "Soho House Rooftop",
     address: "29-35 9th Ave, New York, NY 10014",
     photo: siteSoho,
-    shiftStatus: "scheduled",
-    shiftStatusLabel: "Scheduled Thu",
-    waterSchedule: "Every 2 hours, 11:00 AM – 9:00 PM",
-    notes: "Fill-in coverage. Check in with front desk on the ground floor for elevator access.",
+    compliance: "attention",
+    amenityIds: ["sh-roof", "sh-spa"],
     coords: { lat: 40.7409, lng: -74.0078 },
-    geofenceRadius: 120,
+    mapsQuery: "29-35 9th Ave, New York, NY 10014",
   },
   {
-    id: "scott-ave",
-    name: "154 Scott Ave",
-    address: "154 Scott Ave, Brooklyn, NY 11237",
-    photo: siteScott,
-    shiftStatus: "none",
-    shiftStatusLabel: "Past assignment",
-    waterSchedule: "Every hour, 12:00 AM – 8:00 AM",
-    notes: "Overnight fill-in site. Side entrance via the alley; key fob from the overnight supervisor.",
-    coords: { lat: 40.7012, lng: -73.9275 },
-    geofenceRadius: 100,
+    id: "bruckner",
+    name: "25 Bruckner",
+    address: "25 Bruckner Blvd, Bronx, NY 10454",
+    photo: siteBruckner,
+    compliance: "compliant",
+    amenityIds: ["br-main"],
+    coords: { lat: 40.8062, lng: -73.9201 },
+    mapsQuery: "25 Bruckner Blvd, Bronx, NY 10454",
   },
 ];
 
-/** App “today” for assignment categorization & history demos. */
-export const appToday = new Date(2026, 7, 6); // Thu Aug 6, 2026
-
-export type AssignmentType = "Primary" | "Temporary";
-export type AssignmentBucket = "current" | "upcoming" | "past";
-
-export type SiteAssignment = {
-  id: string;
-  siteId: string;
-  type: AssignmentType;
-  /** ISO date YYYY-MM-DD */
-  startDate: string;
-  /** ISO date or null for Ongoing Primary */
-  endDate: string | null;
-  shiftTime: string;
-  /** Past assignment summary */
-  daysWorked?: number;
-  daysScheduled?: number;
-};
-
-export const siteAssignments: SiteAssignment[] = [
+export const amenities: Amenity[] = [
   {
-    id: "asg-manhattan-primary",
-    siteId: "manhattan-park",
-    type: "Primary",
-    startDate: "2026-01-15",
-    endDate: null,
-    shiftTime: "8:00 AM – 4:00 PM",
-  },
-  {
-    id: "asg-soho-event",
-    siteId: "soho-house",
-    type: "Temporary",
-    startDate: "2026-08-12",
-    endDate: "2026-08-14",
-    shiftTime: "4:00 PM – 12:00 AM",
-  },
-  {
-    id: "asg-scott-overnight",
-    siteId: "scott-ave",
-    type: "Temporary",
-    startDate: "2026-07-01",
-    endDate: "2026-07-14",
-    shiftTime: "12:00 AM – 8:00 AM",
-    daysWorked: 13,
-    daysScheduled: 14,
-  },
-];
-
-function parseISODate(iso: string): Date {
-  const [y, m, d] = iso.split("-").map(Number);
-  return new Date(y!, m! - 1, d!);
-}
-
-function startOfDay(d: Date): Date {
-  return new Date(d.getFullYear(), d.getMonth(), d.getDate());
-}
-
-export function assignmentBucket(
-  a: SiteAssignment,
-  asOf: Date = appToday,
-): AssignmentBucket {
-  const today = startOfDay(asOf).getTime();
-  const start = startOfDay(parseISODate(a.startDate)).getTime();
-  if (start > today) return "upcoming";
-  if (a.endDate) {
-    const end = startOfDay(parseISODate(a.endDate)).getTime();
-    if (end < today) return "past";
-  }
-  return "current";
-}
-
-export function formatAssignmentPeriod(a: SiteAssignment): string {
-  const fmt = (iso: string) =>
-    parseISODate(iso).toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    });
-  if (!a.endDate) return `Since ${fmt(a.startDate)} · Ongoing`;
-  return `${fmt(a.startDate)} – ${fmt(a.endDate)}`;
-}
-
-export function daysUntilStart(a: SiteAssignment, asOf: Date = appToday): number {
-  const start = startOfDay(parseISODate(a.startDate)).getTime();
-  const today = startOfDay(asOf).getTime();
-  return Math.max(0, Math.round((start - today) / 86400000));
-}
-
-export function attendancePct(a: SiteAssignment): number | null {
-  if (!a.daysScheduled || !a.daysWorked) return null;
-  return Math.round((a.daysWorked / a.daysScheduled) * 100);
-}
-
-export type HistoryEventStatus = "completed" | "missed" | "late" | "info" | "flagged";
-
-export type SiteHistoryEvent = {
-  time: string;
-  label: string;
-  status: HistoryEventStatus;
-  photoCount?: number;
-};
-
-export type SiteHistoryDay = {
-  /** YYYY-MM-DD */
-  date: string;
-  tasksCompleted: number;
-  tasksTotal: number;
-  clockIn?: string;
-  clockOut?: string;
-  waterOk: number;
-  waterTotal: number;
-  events: SiteHistoryEvent[];
-};
-
-/** Marcus’s history at Manhattan Park — Aug 1–6 sample. */
-export const manhattanParkHistory: SiteHistoryDay[] = [
-  {
-    date: "2026-08-01",
-    tasksCompleted: 4,
-    tasksTotal: 4,
-    clockIn: "8:58 AM",
-    clockOut: "4:02 PM",
-    waterOk: 2,
-    waterTotal: 2,
-    events: [
-      { time: "8:58 AM", label: "Clocked In", status: "info" },
-      { time: "9:05 AM", label: "Opening Checklist — Completed", status: "completed" },
-      { time: "9:06 AM", label: "Opening Photos Submitted", status: "completed", photoCount: 4 },
-      { time: "11:00 AM", label: "Water Test Submitted — Within Range", status: "completed" },
-      { time: "3:00 PM", label: "Water Test Submitted — Within Range", status: "completed" },
-      { time: "4:00 PM", label: "Closing Checklist — Completed", status: "completed" },
-      { time: "4:02 PM", label: "Clocked Out", status: "info" },
+    id: "mp-main",
+    propertyId: "manhattan-park",
+    name: "Main Pool",
+    type: "Main Pool",
+    photo: siteManhattan,
+    waterStatus: "safe",
+    lastTested: "2026-08-06T09:04:00",
+    lastTestedLabel: "Today, 9:04 AM",
+    readings: { chlorine: 2.4, ph: 7.4, temp: 81 },
+    history: [
+      { time: "9:04 AM", date: "Aug 6", chlorine: 2.4, ph: 7.4, temp: 81, status: "ok" },
+      { time: "3:00 PM", date: "Aug 5", chlorine: 2.2, ph: 7.5, temp: 82, status: "ok" },
+      { time: "11:00 AM", date: "Aug 5", chlorine: 2.1, ph: 7.4, temp: 81, status: "ok" },
+      { time: "9:05 AM", date: "Aug 4", chlorine: 2.6, ph: 7.3, temp: 80, status: "ok" },
+      { time: "3:05 PM", date: "Aug 3", chlorine: 1.9, ph: 7.6, temp: 82, status: "ok" },
+      { time: "9:03 AM", date: "Aug 2", chlorine: 2.3, ph: 7.4, temp: 81, status: "ok" },
     ],
   },
   {
-    date: "2026-08-02",
-    tasksCompleted: 3,
-    tasksTotal: 4,
-    clockIn: "8:55 AM",
-    clockOut: "4:05 PM",
-    waterOk: 2,
-    waterTotal: 2,
-    events: [
-      { time: "8:55 AM", label: "Clocked In", status: "info" },
-      { time: "9:04 AM", label: "Opening Checklist — Completed", status: "completed" },
-      { time: "9:05 AM", label: "Opening Photos Submitted", status: "completed", photoCount: 4 },
-      { time: "11:02 AM", label: "Water Test Submitted — Within Range", status: "completed" },
-      { time: "3:01 PM", label: "Water Test Submitted — Within Range", status: "completed" },
-      { time: "4:00 PM", label: "Closing Checklist — Missed", status: "missed" },
-      { time: "4:05 PM", label: "Clocked Out", status: "info" },
+    id: "mp-spa",
+    propertyId: "manhattan-park",
+    name: "Spa",
+    type: "Spa",
+    photo: photoEquipment,
+    waterStatus: "safe",
+    lastTested: "2026-08-06T09:10:00",
+    lastTestedLabel: "Today, 9:10 AM",
+    readings: { chlorine: 3.1, ph: 7.5, temp: 102 },
+    history: [
+      { time: "9:10 AM", date: "Aug 6", chlorine: 3.1, ph: 7.5, temp: 102, status: "ok" },
+      { time: "4:58 PM", date: "Aug 5", chlorine: 2.9, ph: 7.4, temp: 101, status: "ok" },
+      { time: "9:12 AM", date: "Aug 4", chlorine: 3.2, ph: 7.6, temp: 103, status: "ok" },
     ],
   },
   {
-    date: "2026-08-03",
-    tasksCompleted: 4,
-    tasksTotal: 4,
-    clockIn: "8:55 AM",
-    clockOut: "4:01 PM",
-    waterOk: 1,
-    waterTotal: 2,
-    events: [
-      { time: "8:55 AM", label: "Clocked In", status: "info" },
-      { time: "9:03 AM", label: "Opening Checklist — Completed", status: "completed" },
-      { time: "9:04 AM", label: "Opening Photos Submitted", status: "completed", photoCount: 4 },
-      { time: "11:00 AM", label: "Water Test Submitted — Within Range", status: "completed" },
-      {
-        time: "3:05 PM",
-        label: "Water Test Flagged — Corrective action logged",
-        status: "flagged",
-      },
-      { time: "4:00 PM", label: "Closing Checklist — Completed", status: "completed" },
-      { time: "4:01 PM", label: "Clocked Out", status: "info" },
+    id: "sh-roof",
+    propertyId: "soho-house",
+    name: "Rooftop Pool",
+    type: "Rooftop Pool",
+    photo: siteSoho,
+    waterStatus: "safe",
+    lastTested: "2026-08-05T11:15:00",
+    lastTestedLabel: "Yesterday, 11:15 AM",
+    readings: { chlorine: 2.0, ph: 7.5, temp: 80 },
+    history: [
+      { time: "11:15 AM", date: "Aug 5", chlorine: 2.0, ph: 7.5, temp: 80, status: "ok" },
+      { time: "3:20 PM", date: "Aug 4", chlorine: 2.2, ph: 7.4, temp: 81, status: "ok" },
+      { time: "11:10 AM", date: "Aug 3", chlorine: 1.8, ph: 7.6, temp: 80, status: "ok" },
     ],
   },
   {
-    date: "2026-08-04",
-    tasksCompleted: 4,
-    tasksTotal: 4,
-    clockIn: "9:14 AM",
-    clockOut: "4:02 PM",
-    waterOk: 2,
-    waterTotal: 2,
-    events: [
-      { time: "9:14 AM", label: "Clocked In", status: "late" },
-      { time: "9:20 AM", label: "Opening Checklist — Completed", status: "completed" },
-      { time: "9:22 AM", label: "Opening Photos Submitted", status: "completed", photoCount: 4 },
-      { time: "11:00 AM", label: "Water Test Submitted — Within Range", status: "completed" },
-      { time: "3:00 PM", label: "Water Test Submitted — Within Range", status: "completed" },
-      { time: "4:00 PM", label: "Closing Checklist — Completed", status: "completed" },
-      { time: "4:02 PM", label: "Clocked Out", status: "info" },
+    id: "sh-spa",
+    propertyId: "soho-house",
+    name: "Spa",
+    type: "Spa",
+    photo: photoEquipment,
+    waterStatus: "safe",
+    lastTested: "2026-08-05T11:22:00",
+    lastTestedLabel: "Yesterday, 11:22 AM",
+    readings: { chlorine: 2.8, ph: 7.4, temp: 101 },
+    history: [
+      { time: "11:22 AM", date: "Aug 5", chlorine: 2.8, ph: 7.4, temp: 101, status: "ok" },
+      { time: "3:28 PM", date: "Aug 4", chlorine: 3.0, ph: 7.5, temp: 102, status: "ok" },
     ],
   },
   {
-    date: "2026-08-05",
-    tasksCompleted: 4,
-    tasksTotal: 4,
-    clockIn: "8:58 AM",
-    clockOut: "4:03 PM",
-    waterOk: 2,
-    waterTotal: 2,
-    events: [
-      { time: "8:58 AM", label: "Clocked In", status: "info" },
-      { time: "9:05 AM", label: "Opening Checklist — Completed", status: "completed" },
-      {
-        time: "10:15 AM",
-        label: "Opening Photos Submitted",
-        status: "late",
-        photoCount: 4,
-      },
-      { time: "11:00 AM", label: "Water Test Submitted — Within Range", status: "completed" },
-      { time: "3:00 PM", label: "Water Test Submitted — Within Range", status: "completed" },
-      { time: "4:00 PM", label: "Closing Checklist — Completed", status: "completed" },
-      { time: "4:03 PM", label: "Clocked Out", status: "info" },
-    ],
-  },
-  {
-    date: "2026-08-06",
-    tasksCompleted: 2,
-    tasksTotal: 4,
-    clockIn: "8:57 AM",
-    waterOk: 1,
-    waterTotal: 2,
-    events: [
-      { time: "8:57 AM", label: "Clocked In", status: "info" },
-      { time: "9:05 AM", label: "Opening Checklist — Completed", status: "completed" },
-      { time: "9:06 AM", label: "Opening Photos Submitted", status: "completed", photoCount: 4 },
-      { time: "11:00 AM", label: "Water Test Submitted — Within Range", status: "completed" },
-      { time: "—", label: "Afternoon water test — In progress", status: "info" },
-      { time: "—", label: "Closing Checklist — Pending", status: "info" },
+    id: "br-main",
+    propertyId: "bruckner",
+    name: "Main Pool",
+    type: "Main Pool",
+    photo: siteBruckner,
+    waterStatus: "safe",
+    lastTested: "2026-08-04T10:40:00",
+    lastTestedLabel: "Tue, 10:40 AM",
+    readings: { chlorine: 2.5, ph: 7.4, temp: 79 },
+    history: [
+      { time: "10:40 AM", date: "Aug 4", chlorine: 2.5, ph: 7.4, temp: 79, status: "ok" },
+      { time: "2:15 PM", date: "Aug 2", chlorine: 2.3, ph: 7.5, temp: 80, status: "ok" },
+      { time: "10:30 AM", date: "Aug 1", chlorine: 2.6, ph: 7.3, temp: 79, status: "ok" },
     ],
   },
 ];
 
-export function siteHistoryFor(siteId: string): SiteHistoryDay[] {
-  if (siteId === "manhattan-park") return manhattanParkHistory;
-  return [];
-}
+export type InspectionResult = "passed" | "notes" | "issue";
 
-export function toISODate(d: Date): string {
-  const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, "0");
-  const day = String(d.getDate()).padStart(2, "0");
-  return `${y}-${m}-${day}`;
-}
-
-export function formatHistoryDate(iso: string): string {
-  return parseISODate(iso).toLocaleDateString("en-US", {
-    weekday: "short",
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
-}
-
-export function addDaysISO(iso: string, delta: number): string {
-  const d = parseISODate(iso);
-  d.setDate(d.getDate() + delta);
-  return toISODate(d);
-}
-
-/** Last N calendar days ending at `endIso`, oldest → newest. */
-export function heatmapWindow(endIso: string, days = 14): string[] {
-  const out: string[] = [];
-  for (let i = days - 1; i >= 0; i--) out.push(addDaysISO(endIso, -i));
-  return out;
-}
-
-export function dayCompletionTone(
-  day: SiteHistoryDay | undefined,
-): "full" | "partial" | "missed" | "empty" | "today" {
-  if (!day) return "empty";
-  if (day.date === toISODate(appToday)) return "today";
-  if (day.tasksCompleted >= day.tasksTotal && day.tasksTotal > 0) return "full";
-  if (day.events.some((e) => e.status === "missed")) return "missed";
-  if (day.tasksCompleted > 0) return "partial";
-  return "empty";
-}
-
-export const photoTypes = [
-  { id: "opening-pool", group: "Opening", label: "Pool", icon: "waves" },
-  { id: "opening-equipment", group: "Opening", label: "Equipment Room", icon: "wrench" },
-  { id: "opening-rescue", group: "Opening", label: "Rescue Equipment", icon: "life-buoy" },
-  { id: "opening-chemical", group: "Opening", label: "Chemical Storage", icon: "flask" },
-  { id: "closing-pool", group: "Closing", label: "Pool", icon: "waves" },
-  { id: "closing-equipment", group: "Closing", label: "Equipment Room", icon: "wrench" },
-  { id: "closing-rescue", group: "Closing", label: "Rescue Equipment", icon: "life-buoy" },
-  { id: "water-verify", group: "Water Test Verification", label: "Test Strip / Kit", icon: "droplet" },
-  { id: "incident", group: "Incident", label: "Incident Photo", icon: "alert" },
-];
-
-export type TaskCategory = "Opening" | "Ongoing" | "Closing";
-export type TaskStatus = "completed" | "due" | "pending" | "review";
-
-export type ChecklistItem = {
+export type ChecklistResult = {
   id: string;
   label: string;
-  requiresPhoto?: boolean;
-  linksTo?: "water-test";
+  status: "pass" | "fail" | "complete" | "note";
 };
 
-export type Task = {
+export type InspectionPhoto = {
   id: string;
-  name: string;
-  siteId: string;
-  category: TaskCategory;
-  dueTime: string;
-  completedTime?: string;
-  status: TaskStatus;
-  assignedBy: string;
-  requiresSignoff?: boolean;
-  items: ChecklistItem[];
+  src: string;
+  label: string;
+  timestamp: string;
+  inspectionId: string;
+  propertyId: string;
+  amenityId: string;
 };
 
-export const tasks: Task[] = [
+export type Inspection = {
+  id: string;
+  propertyId: string;
+  amenityId: string;
+  date: string;
+  dateIso: string;
+  time: string;
+  inspector: string;
+  result: InspectionResult;
+  notes?: string;
+  checklist: ChecklistResult[];
+  photoIds: string[];
+};
+
+export const inspectionPhotos: InspectionPhoto[] = [
   {
-    id: "opening-checklist",
-    name: "Opening Checklist",
-    siteId: "manhattan-park",
-    category: "Opening",
-    dueTime: "9:00 AM",
-    completedTime: "9:05 AM",
-    status: "completed",
-    assignedBy: "Daily Opening Template",
-    requiresSignoff: true,
-    items: [
-      { id: "gate", label: "Unlock and inspect pool gate/fencing" },
-      { id: "chem", label: "Test and log water chemistry", linksTo: "water-test" },
-      { id: "rescue", label: "Inspect rescue equipment", requiresPhoto: true },
-      { id: "firstaid", label: "Check first aid kit stock" },
-      { id: "signage", label: "Set up signage and safety flags" },
-      {
-        id: "storage",
-        label: "Confirm chemical storage is locked and photographed",
-        requiresPhoto: true,
-      },
-    ],
+    id: "ph-open",
+    src: photoOpening,
+    label: "Opening — Pool",
+    timestamp: "Aug 6, 2026 · 9:06 AM",
+    inspectionId: "insp-today",
+    propertyId: "manhattan-park",
+    amenityId: "mp-main",
   },
   {
-    id: "rescue-check",
-    name: "Rescue Equipment Check",
-    siteId: "manhattan-park",
-    category: "Opening",
-    dueTime: "9:10 AM",
-    completedTime: "9:10 AM",
-    status: "completed",
-    assignedBy: "Daily Opening Template",
-    items: [
-      { id: "tube", label: "Rescue tube present and serviceable" },
-      { id: "backboard", label: "Backboard and straps inspected", requiresPhoto: true },
-      { id: "aed", label: "AED battery indicator green" },
-    ],
+    id: "ph-equip",
+    src: photoEquipment,
+    label: "Opening — Equipment Room",
+    timestamp: "Aug 6, 2026 · 9:07 AM",
+    inspectionId: "insp-today",
+    propertyId: "manhattan-park",
+    amenityId: "mp-main",
   },
   {
-    id: "chemical-check",
-    name: "Chemical Storage Check",
-    siteId: "manhattan-park",
-    category: "Opening",
-    dueTime: "9:12 AM",
-    completedTime: "9:12 AM",
-    status: "completed",
-    assignedBy: "Daily Opening Template",
-    items: [
-      { id: "locked", label: "Storage room locked and labeled" },
-      { id: "levels", label: "Chemical levels sufficient for the day" },
-      { id: "spill", label: "Spill kit in place", requiresPhoto: true },
-    ],
+    id: "ph-chem",
+    src: photoChemical,
+    label: "Opening — Chemical Storage",
+    timestamp: "Aug 6, 2026 · 9:08 AM",
+    inspectionId: "insp-today",
+    propertyId: "manhattan-park",
+    amenityId: "mp-main",
   },
   {
-    id: "water-11",
-    name: "Hourly Water Test (11:00 AM)",
-    siteId: "manhattan-park",
-    category: "Ongoing",
-    dueTime: "11:00 AM",
-    status: "due",
-    assignedBy: "Water Testing Schedule",
-    items: [{ id: "test", label: "Complete water test form", linksTo: "water-test" }],
+    id: "ph-soho-5",
+    src: siteSoho,
+    label: "Opening — Rooftop Pool",
+    timestamp: "Aug 5, 2026 · 11:18 AM",
+    inspectionId: "insp-soho-5",
+    propertyId: "soho-house",
+    amenityId: "sh-roof",
   },
   {
-    id: "water-12",
-    name: "Hourly Water Test (12:00 PM)",
-    siteId: "manhattan-park",
-    category: "Ongoing",
-    dueTime: "12:00 PM",
-    status: "pending",
-    assignedBy: "Water Testing Schedule",
-    items: [{ id: "test", label: "Complete water test form", linksTo: "water-test" }],
+    id: "ph-bruck-4",
+    src: siteBruckner,
+    label: "Opening — Main Pool",
+    timestamp: "Aug 4, 2026 · 10:42 AM",
+    inspectionId: "insp-bruck-4",
+    propertyId: "bruckner",
+    amenityId: "br-main",
   },
   {
-    id: "bathroom",
-    name: "Bathroom Inspection",
-    siteId: "manhattan-park",
-    category: "Ongoing",
-    dueTime: "1:00 PM",
-    status: "pending",
-    assignedBy: "Daily Ongoing Template",
-    items: [
-      { id: "clean", label: "Restrooms clean and stocked" },
-      { id: "hazard", label: "No slip hazards or standing water" },
-      { id: "photo", label: "Photograph restroom entry", requiresPhoto: true },
-    ],
+    id: "ph-soho-deck",
+    src: siteSoho,
+    label: "Deck — North stairs",
+    timestamp: "Aug 3, 2026 · 11:19 AM",
+    inspectionId: "insp-soho-3",
+    propertyId: "soho-house",
+    amenityId: "sh-roof",
   },
   {
-    id: "closing-checklist",
-    name: "Closing Checklist",
-    siteId: "manhattan-park",
-    category: "Closing",
-    dueTime: "7:00 PM",
-    status: "pending",
-    assignedBy: "Daily Closing Template",
-    requiresSignoff: true,
-    items: [
-      { id: "clear", label: "Clear deck and confirm pool is empty" },
-      { id: "cover", label: "Secure pool cover and gates", requiresPhoto: true },
-      { id: "equip", label: "Return rescue equipment to storage", requiresPhoto: true },
-      { id: "log", label: "Complete end-of-day log" },
-    ],
+    id: "ph-mp-spa",
+    src: photoEquipment,
+    label: "Spa — Equipment check",
+    timestamp: "Aug 4, 2026 · 9:14 AM",
+    inspectionId: "insp-mp-4",
+    propertyId: "manhattan-park",
+    amenityId: "mp-spa",
   },
 ];
 
-export type WaterTest = {
-  id: string;
-  siteId: string;
-  body: string;
-  time: string;
-  date: string;
-  chlorine: number;
-  ph: number;
-  temp: number;
-  bathers: number;
-  status: "ok" | "flagged";
-  correctiveAction?: string;
-  signoff?: string;
-};
+const openingChecklist: ChecklistResult[] = [
+  { id: "gate", label: "Pool gate and fencing inspected", status: "pass" },
+  { id: "water", label: "Water quality within safe range", status: "pass" },
+  { id: "rescue", label: "Rescue equipment present and ready", status: "pass" },
+  { id: "firstaid", label: "First aid kit stocked", status: "pass" },
+  { id: "signage", label: "Safety signage in place", status: "complete" },
+  { id: "storage", label: "Chemical storage secured", status: "pass" },
+];
 
-export const waterTests: WaterTest[] = [
+export const inspections: Inspection[] = [
   {
-    id: "wt-1",
-    siteId: "manhattan-park",
-    body: "Main Pool",
-    time: "9:04 AM",
+    id: "insp-today",
+    propertyId: "manhattan-park",
+    amenityId: "mp-main",
     date: "Today",
-    chlorine: 2.4,
-    ph: 7.4,
-    temp: 81,
-    bathers: 0,
-    status: "ok",
-    signoff: "Approved by Dana Reyes",
+    dateIso: "2026-08-06",
+    time: "9:05 AM",
+    inspector: "Marcus Bennett",
+    result: "passed",
+    notes: "Deck and equipment room in excellent order. Opening photos attached.",
+    checklist: openingChecklist,
+    photoIds: ["ph-open", "ph-equip", "ph-chem"],
   },
   {
-    id: "wt-2",
-    siteId: "manhattan-park",
-    body: "Main Pool",
-    time: "10:02 AM",
-    date: "Today",
-    chlorine: 2.1,
-    ph: 7.5,
-    temp: 82,
-    bathers: 12,
-    status: "ok",
-  },
-  {
-    id: "wt-3",
-    siteId: "manhattan-park",
-    body: "Spa",
-    time: "4:58 PM",
+    id: "insp-soho-5",
+    propertyId: "soho-house",
+    amenityId: "sh-roof",
     date: "Yesterday",
-    chlorine: 0.7,
-    ph: 7.8,
-    temp: 102,
-    bathers: 4,
-    status: "flagged",
-    correctiveAction: "Added 8 oz sodium hypochlorite, closed spa 30 min, retested at 5:35 PM.",
-    signoff: "Reviewed by Dana Reyes",
+    dateIso: "2026-08-05",
+    time: "11:16 AM",
+    inspector: "Jamie Ortiz",
+    result: "notes",
+    notes:
+      "Water quality is within range. Follow-up on the loose north-stair deck tile is already assigned to a technician.",
+    checklist: [
+      { id: "gate", label: "Pool gate and fencing inspected", status: "pass" },
+      { id: "water", label: "Water quality within safe range", status: "pass" },
+      { id: "deck", label: "Deck surfaces clear and secure", status: "note" },
+      { id: "rescue", label: "Rescue equipment present and ready", status: "pass" },
+      { id: "signage", label: "Safety signage in place", status: "complete" },
+    ],
+    photoIds: ["ph-soho-5"],
   },
-];
-
-export const ranges = {
-  chlorine: { min: 1, max: 4, warnLow: 1.5, warnHigh: 3.5, unit: "ppm", scale: [0, 6] },
-  ph: { min: 7.2, max: 7.8, warnLow: 7.3, warnHigh: 7.7, unit: "", scale: [6.5, 8.5] },
-  temp: { min: 78, max: 86, warnLow: 79, warnHigh: 85, unit: "°F", scale: [70, 105] },
-};
-
-export type Shift = {
-  id: string;
-  day: string;
-  date: string;
-  siteId: string;
-  time: string;
-  note?: string;
-};
-
-export const shifts: Shift[] = [
-  { id: "s1", day: "Mon", date: "Aug 3", siteId: "manhattan-park", time: "9:00 AM – 7:00 PM" },
-  { id: "s2", day: "Tue", date: "Aug 4", siteId: "manhattan-park", time: "9:00 AM – 7:00 PM" },
-  { id: "s3", day: "Wed", date: "Aug 5", siteId: "manhattan-park", time: "9:00 AM – 7:00 PM" },
   {
-    id: "s4",
-    day: "Thu",
-    date: "Aug 6",
-    siteId: "soho-house",
-    time: "11:00 AM – 9:00 PM",
-    note: "Fill-in coverage",
+    id: "insp-bruck-4",
+    propertyId: "bruckner",
+    amenityId: "br-main",
+    date: "Tue, Aug 4",
+    dateIso: "2026-08-04",
+    time: "10:40 AM",
+    inspector: "Priya Shah",
+    result: "passed",
+    checklist: openingChecklist,
+    photoIds: ["ph-bruck-4"],
   },
-  { id: "s5", day: "Fri", date: "Aug 7", siteId: "manhattan-park", time: "9:00 AM – 7:00 PM" },
+  {
+    id: "insp-mp-5",
+    propertyId: "manhattan-park",
+    amenityId: "mp-main",
+    date: "Yesterday",
+    dateIso: "2026-08-05",
+    time: "9:04 AM",
+    inspector: "Marcus Bennett",
+    result: "passed",
+    checklist: openingChecklist,
+    photoIds: [],
+  },
+  {
+    id: "insp-mp-4",
+    propertyId: "manhattan-park",
+    amenityId: "mp-spa",
+    date: "Tue, Aug 4",
+    dateIso: "2026-08-04",
+    time: "9:12 AM",
+    inspector: "Marcus Bennett",
+    result: "passed",
+    checklist: openingChecklist,
+    photoIds: ["ph-mp-spa"],
+  },
+  {
+    id: "insp-soho-3",
+    propertyId: "soho-house",
+    amenityId: "sh-roof",
+    date: "Mon, Aug 3",
+    dateIso: "2026-08-03",
+    time: "11:08 AM",
+    inspector: "Jamie Ortiz",
+    result: "issue",
+    notes: "Loose deck tile reported near the north stairs. Issue opened for facilities.",
+    checklist: [
+      { id: "gate", label: "Pool gate and fencing inspected", status: "pass" },
+      { id: "water", label: "Water quality within safe range", status: "pass" },
+      { id: "deck", label: "Deck surfaces clear and secure", status: "fail" },
+      { id: "rescue", label: "Rescue equipment present and ready", status: "pass" },
+    ],
+    photoIds: ["ph-soho-deck"],
+  },
+  {
+    id: "insp-mp-3",
+    propertyId: "manhattan-park",
+    amenityId: "mp-main",
+    date: "Mon, Aug 3",
+    dateIso: "2026-08-03",
+    time: "9:03 AM",
+    inspector: "Marcus Bennett",
+    result: "notes",
+    notes: "Afternoon water test required a brief corrective action; retested within range the same day.",
+    checklist: openingChecklist.map((c) =>
+      c.id === "water" ? { ...c, status: "note" as const } : c,
+    ),
+    photoIds: [],
+  },
+  {
+    id: "insp-bruck-1",
+    propertyId: "bruckner",
+    amenityId: "br-main",
+    date: "Sat, Aug 1",
+    dateIso: "2026-08-01",
+    time: "10:30 AM",
+    inspector: "Priya Shah",
+    result: "passed",
+    checklist: openingChecklist,
+    photoIds: [],
+  },
 ];
+
+/** Client-friendly 90-day rollup used on the history / trend screen. */
+export const inspectionTrend = {
+  windowLabel: "Last 90 days",
+  passedClean: 22,
+  total: 24,
+};
+
+export type Priority = "Low" | "Medium" | "High" | "Critical";
+export type IssueStatus = "Open" | "In Progress" | "Resolved";
+
+export type TimelineStep = {
+  label: string;
+  time: string;
+  done: boolean;
+};
+
+export type Comment = {
+  id: string;
+  from: "me" | "them";
+  sender: string;
+  text: string;
+  time: string;
+};
+
+export type Issue = {
+  id: string;
+  type: string;
+  title: string;
+  propertyId: string;
+  amenityId?: string;
+  description: string;
+  priority: Priority;
+  status: IssueStatus;
+  date: string;
+  reportedAgo: string;
+  photos: string[];
+  timeline: TimelineStep[];
+  comments: Comment[];
+  threadId: string;
+};
+
+export const issues: Issue[] = [
+  {
+    id: "iss-1",
+    type: "Deck / Surfaces",
+    title: "Pool deck tile slightly loose near the north stairs",
+    propertyId: "soho-house",
+    amenityId: "sh-roof",
+    description:
+      "A single deck tile near the north stairs has a slight give underfoot. The area is marked and guests are being directed around it. A technician has been assigned and resolution is expected this week.",
+    priority: "Medium",
+    status: "In Progress",
+    date: "Aug 3, 2026",
+    reportedAgo: "3 days ago",
+    photos: [photoDeck],
+    timeline: [
+      { label: "Reported during inspection", time: "Aug 3 · 11:20 AM", done: true },
+      { label: "Assigned to technician", time: "Aug 3 · 2:40 PM", done: true },
+      { label: "Expected resolution this week", time: "In progress", done: false },
+    ],
+    comments: [
+      {
+        id: "c1",
+        from: "them",
+        sender: "Dana Reyes",
+        text: "We've marked the tile and scheduled a mason for Thursday morning. I'll send photos once it's reset.",
+        time: "Aug 4 · 9:12 AM",
+      },
+    ],
+    threadId: "issue-iss-1",
+  },
+];
+
+export type RequestStatus = "Submitted" | "Acknowledged" | "In Progress" | "Completed";
+export type RequestPriority = "Standard" | "Urgent";
+
+export type ServiceRequest = {
+  id: string;
+  number: string;
+  title: string;
+  propertyId: string;
+  amenityId?: string;
+  description: string;
+  priority: RequestPriority;
+  status: RequestStatus;
+  submitted: string;
+  submittedIso: string;
+  notes?: string;
+  photos: string[];
+  comments: Comment[];
+  threadId: string;
+};
+
+export const serviceRequests: ServiceRequest[] = [
+  {
+    id: "req-1042",
+    number: "1042",
+    title: "Additional pool furniture inspection before rooftop event",
+    propertyId: "bruckner",
+    amenityId: "br-main",
+    description:
+      "Requesting additional pool furniture inspection before our rooftop event on Aug 20. Please confirm lounge chairs and umbrellas are guest-ready.",
+    priority: "Standard",
+    status: "Acknowledged",
+    submitted: "Aug 5, 2026",
+    submittedIso: "2026-08-05",
+    notes: "Dana confirmed the request. A walkthrough is scheduled for Aug 18.",
+    photos: [],
+    comments: [
+      {
+        id: "c1",
+        from: "them",
+        sender: "Dana Reyes",
+        text: "Received — we'll do a dedicated furniture walkthrough on Aug 18 and send photos.",
+        time: "Aug 5 · 4:20 PM",
+      },
+    ],
+    threadId: "request-req-1042",
+  },
+  {
+    id: "req-1043",
+    number: "1043",
+    title: "Please confirm weekend staffing for holiday weekend",
+    propertyId: "manhattan-park",
+    description:
+      "Can you confirm lifeguard coverage for the Saturday–Monday holiday weekend so we can brief residents?",
+    priority: "Urgent",
+    status: "Submitted",
+    submitted: "Today",
+    submittedIso: "2026-08-06",
+    photos: [],
+    comments: [],
+    threadId: "request-req-1043",
+  },
+];
+
+export type WorkOrderStatus = "Scheduled" | "In Progress" | "Completed";
+
+export type WorkOrder = {
+  id: string;
+  title: string;
+  propertyId: string;
+  amenityId?: string;
+  description: string;
+  scheduled: string;
+  status: WorkOrderStatus;
+  progressNotes: string[];
+  completionNote?: string;
+  photos: { src: string; label: string }[];
+};
+
+export const workOrders: WorkOrder[] = [
+  {
+    id: "wo-1",
+    title: "Filter replacement — Main Pool",
+    propertyId: "manhattan-park",
+    amenityId: "mp-main",
+    description:
+      "Scheduled cartridge filter replacement on the main pool circulation system, followed by a full water-quality retest.",
+    scheduled: "Aug 5, 2026",
+    status: "Completed",
+    progressNotes: [
+      "Aug 5 · 8:30 AM — Technician on site, system isolated.",
+      "Aug 5 · 10:15 AM — New filter installed and primed.",
+    ],
+    completionNote:
+      "Filter replaced and system back online. Water retested within safe range. Deck and equipment room restored.",
+    photos: [
+      { src: photoFilterBefore, label: "Before" },
+      { src: photoFilterAfter, label: "After" },
+    ],
+  },
+  {
+    id: "wo-2",
+    title: "North-stair deck tile reset",
+    propertyId: "soho-house",
+    amenityId: "sh-roof",
+    description: "Reset and reseal the loose tile reported near the north stairs.",
+    scheduled: "Aug 7, 2026",
+    status: "Scheduled",
+    progressNotes: ["Materials confirmed. Mason booked for Thursday morning."],
+    photos: [],
+  },
+];
+
+export type NotificationType =
+  | "inspection"
+  | "issue"
+  | "work"
+  | "request"
+  | "announcement";
 
 export type Notification = {
   id: string;
   group: "Today" | "Yesterday" | "Earlier";
-  type: "task" | "message" | "photo" | "water" | "cert";
+  type: NotificationType;
   title: string;
   description: string;
   time: string;
   unread: boolean;
+  href:
+    | { to: "/inspection/$inspectionId"; params: { inspectionId: string } }
+    | { to: "/issue/$issueId"; params: { issueId: string } }
+    | { to: "/work-order/$workOrderId"; params: { workOrderId: string } }
+    | { to: "/request/$requestId"; params: { requestId: string } }
+    | { to: "/thread/$threadId"; params: { threadId: string } };
 };
 
 export const notifications: Notification[] = [
   {
     id: "n1",
     group: "Today",
-    type: "water",
-    title: "Water test due in 15 minutes",
-    description: "Main Pool — Manhattan Park Pool Club",
-    time: "10m ago",
+    type: "inspection",
+    title: "New inspection completed at Manhattan Park Pool Club",
+    description: "Main Pool · Passed · Marcus Bennett",
+    time: "9:05 AM",
     unread: true,
+    href: { to: "/inspection/$inspectionId", params: { inspectionId: "insp-today" } },
   },
   {
     id: "n2",
     group: "Today",
-    type: "photo",
-    title: "Supervisor approved your opening photos",
-    description: "4 photos approved by Dana Reyes",
-    time: "1h ago",
+    type: "request",
+    title: "Your service request #1042 has been updated",
+    description: "Status is now Acknowledged",
+    time: "Yesterday",
     unread: true,
+    href: { to: "/request/$requestId", params: { requestId: "req-1042" } },
   },
   {
     id: "n3",
-    group: "Today",
-    type: "message",
-    title: "New message from Supervisor Dana Reyes",
-    description: "Reminder: water testing kit restock arrives today...",
-    time: "2h ago",
+    group: "Yesterday",
+    type: "work",
+    title: "Work order completed at Manhattan Park Pool Club",
+    description: "Filter replacement — Main Pool",
+    time: "Yesterday",
     unread: true,
+    href: { to: "/work-order/$workOrderId", params: { workOrderId: "wo-1" } },
   },
   {
     id: "n4",
     group: "Yesterday",
-    type: "task",
-    title: "Reminder: Closing checklist due by 6:00 PM",
-    description: "Manhattan Park Pool Club",
-    time: "Yesterday",
+    type: "issue",
+    title: "New issue reported at Soho House Rooftop",
+    description: "Pool deck tile slightly loose near the north stairs",
+    time: "3d ago",
     unread: false,
+    href: { to: "/issue/$issueId", params: { issueId: "iss-1" } },
   },
   {
     id: "n5",
     group: "Earlier",
-    type: "cert",
-    title: "Your CPR certification expires in 30 days",
-    description: "CPR/AED/First Aid — renew before 09/12/2026",
-    time: "3d ago",
+    type: "announcement",
+    title: "Important announcement from Bluecrest",
+    description: "Holiday weekend coverage schedule is now posted.",
+    time: "5d ago",
     unread: false,
+    href: { to: "/thread/$threadId", params: { threadId: "announcements" } },
   },
-];
-
-export type Certification = {
-  id: string;
-  name: string;
-  issuer: string;
-  issued: string;
-  expires: string;
-  status: "valid" | "expiring" | "expired";
-};
-
-export const certifications: Certification[] = [
-  {
-    id: "c1",
-    name: "Red Cross Lifeguard Certification",
-    issuer: "American Red Cross",
-    issued: "03/15/2025",
-    expires: "03/15/2027",
-    status: "valid",
-  },
-  {
-    id: "c2",
-    name: "CPR/AED/First Aid",
-    issuer: "American Red Cross",
-    issued: "09/12/2024",
-    expires: "09/12/2026",
-    status: "expiring",
-  },
-  {
-    id: "c3",
-    name: "Bloodborne Pathogens Training",
-    issuer: "OSHA Authorized Provider",
-    issued: "01/20/2025",
-    expires: "01/20/2027",
-    status: "valid",
-  },
-];
-
-export type AttendanceEntry = {
-  id: string;
-  date: string;
-  day: number;
-  siteId: string;
-  clockIn: string;
-  clockOut: string;
-  hours: string;
-  status: "complete" | "late" | "off";
-};
-
-/** Demo “today” aligned with the staff app calendar. */
-export const attendanceAsOf = new Date(2026, 7, 7); // Fri Aug 7, 2026
-
-export const attendance: AttendanceEntry[] = [
-  {
-    id: "a1",
-    date: "Aug 6, 2026",
-    day: 6,
-    siteId: "manhattan-park",
-    clockIn: "8:57 AM",
-    clockOut: "7:03 PM",
-    hours: "10h 06m",
-    status: "complete",
-  },
-  {
-    id: "a2",
-    date: "Aug 5, 2026",
-    day: 5,
-    siteId: "manhattan-park",
-    clockIn: "8:58 AM",
-    clockOut: "7:04 PM",
-    hours: "10h 06m",
-    status: "complete",
-  },
-  {
-    id: "a3",
-    date: "Aug 4, 2026",
-    day: 4,
-    siteId: "manhattan-park",
-    clockIn: "9:14 AM",
-    clockOut: "7:02 PM",
-    hours: "9h 48m",
-    status: "late",
-  },
-  {
-    id: "a4",
-    date: "Aug 3, 2026",
-    day: 3,
-    siteId: "manhattan-park",
-    clockIn: "8:55 AM",
-    clockOut: "7:00 PM",
-    hours: "10h 05m",
-    status: "complete",
-  },
-  {
-    id: "a5",
-    date: "Aug 1, 2026",
-    day: 1,
-    siteId: "soho-house",
-    clockIn: "11:00 AM",
-    clockOut: "9:00 PM",
-    hours: "10h 00m",
-    status: "complete",
-  },
-  {
-    id: "a6",
-    date: "Jul 31, 2026",
-    day: 31,
-    siteId: "soho-house",
-    clockIn: "11:02 AM",
-    clockOut: "9:05 PM",
-    hours: "10h 03m",
-    status: "complete",
-  },
-  {
-    id: "a7",
-    date: "Jul 28, 2026",
-    day: 28,
-    siteId: "manhattan-park",
-    clockIn: "9:05 AM",
-    clockOut: "7:01 PM",
-    hours: "9h 56m",
-    status: "late",
-  },
-  {
-    id: "a8",
-    date: "Jul 25, 2026",
-    day: 25,
-    siteId: "manhattan-park",
-    clockIn: "8:52 AM",
-    clockOut: "7:00 PM",
-    hours: "10h 08m",
-    status: "complete",
-  },
-];
-
-/** Parse "Aug 5, 2026" style attendance dates. */
-export function parseAttendanceDate(date: string): Date {
-  return new Date(date);
-}
-
-/** Hours string like "10h 06m" → decimal hours. */
-export function attendanceHoursToNumber(hours: string): number {
-  const h = hours.match(/(\d+)\s*h/i);
-  const m = hours.match(/(\d+)\s*m/i);
-  return (h ? Number(h[1]) : 0) + (m ? Number(m[1]) / 60 : 0);
-}
-
-export type AttendanceRange = "week" | "month" | "all";
-
-/** Monday-start week containing `asOf`. */
-function startOfWeek(asOf: Date): Date {
-  const d = new Date(asOf.getFullYear(), asOf.getMonth(), asOf.getDate());
-  const day = d.getDay(); // 0 Sun … 6 Sat
-  const diff = day === 0 ? 6 : day - 1;
-  d.setDate(d.getDate() - diff);
-  d.setHours(0, 0, 0, 0);
-  return d;
-}
-
-function endOfWeek(asOf: Date): Date {
-  const start = startOfWeek(asOf);
-  const end = new Date(start);
-  end.setDate(start.getDate() + 6);
-  end.setHours(23, 59, 59, 999);
-  return end;
-}
-
-export function filterAttendance(
-  entries: AttendanceEntry[],
-  range: AttendanceRange,
-  asOf: Date = attendanceAsOf,
-): AttendanceEntry[] {
-  if (range === "all") return entries;
-
-  if (range === "week") {
-    const start = startOfWeek(asOf);
-    const end = endOfWeek(asOf);
-    return entries.filter((e) => {
-      const d = parseAttendanceDate(e.date);
-      return d >= start && d <= end;
-    });
-  }
-
-  // month
-  const y = asOf.getFullYear();
-  const m = asOf.getMonth();
-  return entries.filter((e) => {
-    const d = parseAttendanceDate(e.date);
-    return d.getFullYear() === y && d.getMonth() === m;
-  });
-}
-
-export function attendanceRangeLabel(range: AttendanceRange, asOf: Date = attendanceAsOf): string {
-  if (range === "all") return "All Time";
-  if (range === "week") {
-    const start = startOfWeek(asOf);
-    const end = endOfWeek(asOf);
-    const fmt = (d: Date) =>
-      d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
-    return `${fmt(start)} – ${fmt(end)}`;
-  }
-  return asOf.toLocaleDateString("en-US", { month: "long", year: "numeric" });
-}
-
-export type IncidentSeverity = "Low" | "Medium" | "High" | "Critical";
-
-export type Incident = {
-  id: string;
-  type: string;
-  title: string;
-  siteId: string;
-  description: string;
-  severity: IncidentSeverity;
-  date: string;
-  status: "Open" | "Under Review" | "Resolved";
-  photos: string[];
-  timeline: { label: string; time: string }[];
-};
-
-export const incidents: Incident[] = [
-  {
-    id: "i1",
-    type: "Rule Violation",
-    title: "Minor slip near pool deck",
-    siteId: "manhattan-park",
-    description:
-      "Wet floor near the north deck entry. Area cordoned off and dried, signage placed. No injury, guest continued swimming.",
-    severity: "Low",
-    date: "Jul 28, 2026 · 2:14 PM",
-    status: "Resolved",
-    photos: [],
-    timeline: [
-      { label: "Submitted", time: "Jul 28, 2:20 PM" },
-      { label: "Under Review by Dana Reyes", time: "Jul 28, 3:02 PM" },
-      { label: "Resolved — Deck resealed by facilities, no further action", time: "Jul 30, 9:15 AM" },
-    ],
-  },
-];
-
-export const incidentTypes = [
-  "Injury",
-  "Rescue",
-  "Chemical Issue",
-  "Equipment Damage",
-  "Weather Closure",
-  "Rule Violation",
 ];
 
 export type Message = {
@@ -907,43 +694,45 @@ export type Message = {
   photo?: string;
 };
 
-export type ThreadMember = {
-  id: string;
-  name: string;
-  role: string;
-  avatar?: string;
-  status: "online" | "away" | "offline";
+export type ThreadKind = "direct" | "announcement" | "issue" | "request";
+
+export type ThreadContext = {
+  label: string;
+  to: "/issue/$issueId" | "/request/$requestId";
+  params: { issueId?: string; requestId?: string };
 };
 
 export type Thread = {
   id: string;
-  kind: "direct" | "group" | "announcement";
+  kind: ThreadKind;
   name: string;
   subtitle: string;
+  title?: string;
   avatar?: string;
   unread: number;
-  urgent?: boolean;
   lastTime: string;
+  pinned?: boolean;
+  context?: ThreadContext;
   messages: Message[];
-  members?: ThreadMember[];
 };
 
 export const threads: Thread[] = [
   {
-    id: "admin-broadcast",
+    id: "announcements",
     kind: "announcement",
-    name: "Bluecrest Admin",
-    subtitle: "Heat advisory in effect today — ensure all guards are rotating shade breaks every hour.",
-    unread: 1,
-    urgent: true,
-    lastTime: "7:42 AM",
+    name: "Announcements",
+    title: "Bluecrest",
+    subtitle: "Holiday weekend coverage schedule is now posted for all Related properties.",
+    unread: 0,
+    lastTime: "Sat",
+    pinned: true,
     messages: [
       {
         id: "m1",
         from: "them",
-        sender: "Bluecrest Admin",
-        text: "Heat advisory in effect today — ensure all guards are rotating shade breaks every hour. Hydration stations must stay stocked at all sites.",
-        time: "7:42 AM",
+        sender: "Bluecrest",
+        text: "Holiday weekend coverage schedule is now posted for all Related properties. Standard hours apply Saturday–Monday. Reach out if you need a staffing confirmation letter for residents.",
+        time: "Sat · 10:02 AM",
       },
     ],
   },
@@ -951,104 +740,224 @@ export const threads: Thread[] = [
     id: "dana",
     kind: "direct",
     name: "Dana Reyes",
-    subtitle: "Reminder: water testing kit restock arrives today, log the new lot number",
+    title: "Field Supervisor",
+    subtitle:
+      "Hi Sarah, just confirming the filter replacement at Manhattan Park is complete and tested — everything's back to normal range. Let me know if you have any questions!",
     avatar: avatarDana,
     unread: 1,
-    lastTime: "8:31 AM",
+    lastTime: "Yesterday",
     messages: [
       {
         id: "m1",
         from: "them",
         sender: "Dana Reyes",
-        text: "Morning Marcus — reminder: water testing kit restock arrives today, log the new lot number when you open the box.",
-        time: "8:28 AM",
+        text: "Hi Sarah, just confirming the filter replacement at Manhattan Park is complete and tested — everything's back to normal range. Let me know if you have any questions!",
+        time: "Yesterday · 4:48 PM",
       },
-      { id: "m2", from: "me", text: "Got it, thanks!", time: "8:31 AM", read: true },
     ],
   },
   {
-    id: "site-group",
-    kind: "group",
-    name: "Manhattan Park Pool Club",
-    subtitle: "Jamie: Deck chairs are set for the morning rush",
-    avatar: siteManhattan,
+    id: "issue-iss-1",
+    kind: "issue",
+    name: "Soho House — Deck tile",
+    title: "Issue follow-up",
+    subtitle: "We've marked the tile and scheduled a mason for Thursday morning.",
     unread: 0,
-    lastTime: "8:12 AM",
-    members: [
-      {
-        id: "marcus",
-        name: "Marcus Bennett",
-        role: "Certified Lifeguard · You",
-        avatar: avatarMarcus,
-        status: "online",
-      },
-      {
-        id: "dana",
-        name: "Dana Reyes",
-        role: "Site Supervisor",
-        avatar: avatarDana,
-        status: "online",
-      },
-      {
-        id: "jamie",
-        name: "Jamie Ortiz",
-        role: "Certified Lifeguard",
-        status: "online",
-      },
-      {
-        id: "priya",
-        name: "Priya Shah",
-        role: "Certified Lifeguard",
-        status: "away",
-      },
-      {
-        id: "luis",
-        name: "Luis Mendez",
-        role: "Deck Attendant",
-        status: "offline",
-      },
-    ],
+    lastTime: "Aug 4",
+    context: {
+      label: "Re: Deck tile — Soho House Rooftop",
+      to: "/issue/$issueId",
+      params: { issueId: "iss-1" },
+    },
     messages: [
       {
         id: "m1",
         from: "them",
         sender: "Dana Reyes",
-        text: "Team — we're expecting a busy Friday. Two guards on the main pool from noon.",
-        time: "7:55 AM",
+        text: "We've marked the tile and scheduled a mason for Thursday morning. I'll send photos once it's reset.",
+        time: "Aug 4 · 9:12 AM",
       },
+    ],
+  },
+  {
+    id: "request-req-1042",
+    kind: "request",
+    name: "Request #1042",
+    title: "Service request",
+    subtitle: "We'll do a dedicated furniture walkthrough on Aug 18 and send photos.",
+    unread: 0,
+    lastTime: "Aug 5",
+    context: {
+      label: "Re: Service Request #1042",
+      to: "/request/$requestId",
+      params: { requestId: "req-1042" },
+    },
+    messages: [
       {
-        id: "m2",
+        id: "m1",
         from: "them",
-        sender: "Jamie Ortiz",
-        text: "Deck chairs are set for the morning rush",
-        time: "8:12 AM",
+        sender: "Dana Reyes",
+        text: "Received — we'll do a dedicated furniture walkthrough on Aug 18 and send photos.",
+        time: "Aug 5 · 4:20 PM",
       },
     ],
   },
 ];
 
-export const activity = [
-  { id: "act1", text: "Chemical Storage Check completed", time: "9:12 AM" },
-  { id: "act2", text: "Rescue Equipment Check completed", time: "9:10 AM" },
-  { id: "act3", text: "Opening photos submitted (4)", time: "9:07 AM" },
-  { id: "act4", text: "Water test logged — Main Pool", time: "9:04 AM" },
+export type ActivityKind = "inspection" | "request" | "message" | "work" | "issue";
+
+export type ActivityItem = {
+  id: string;
+  kind: ActivityKind;
+  text: string;
+  time: string;
+  href:
+    | { to: "/inspection/$inspectionId"; params: { inspectionId: string } }
+    | { to: "/request/$requestId"; params: { requestId: string } }
+    | { to: "/thread/$threadId"; params: { threadId: string } }
+    | { to: "/work-order/$workOrderId"; params: { workOrderId: string } }
+    | { to: "/issue/$issueId"; params: { issueId: string } };
+};
+
+export const activity: ActivityItem[] = [
+  {
+    id: "act1",
+    kind: "inspection",
+    text: "Inspection completed at Manhattan Park Pool Club",
+    time: "9:05 AM",
+    href: { to: "/inspection/$inspectionId", params: { inspectionId: "insp-today" } },
+  },
+  {
+    id: "act2",
+    kind: "request",
+    text: "Service request #1042 marked Acknowledged",
+    time: "Yesterday",
+    href: { to: "/request/$requestId", params: { requestId: "req-1042" } },
+  },
+  {
+    id: "act3",
+    kind: "work",
+    text: "Filter replacement completed at Manhattan Park",
+    time: "Yesterday",
+    href: { to: "/work-order/$workOrderId", params: { workOrderId: "wo-1" } },
+  },
+  {
+    id: "act4",
+    kind: "message",
+    text: "New message from Dana Reyes",
+    time: "Yesterday",
+    href: { to: "/thread/$threadId", params: { threadId: "dana" } },
+  },
+  {
+    id: "act5",
+    kind: "issue",
+    text: "Issue opened at Soho House Rooftop",
+    time: "3d ago",
+    href: { to: "/issue/$issueId", params: { issueId: "iss-1" } },
+  },
 ];
 
 export const faqs = [
   {
-    q: "How do I clock in?",
-    a: "Open the Home tab and tap Clock In on the shift card. Allow location access so we can confirm you're on-site — your clock-in is stamped with GPS and time automatically.",
+    q: "How do I submit a service request?",
+    a: "Open the Requests tab, stay on the Requests segment, and tap + New Request. Choose the property, describe what you need, and attach photos from your phone if helpful. Your Bluecrest representative will acknowledge it in-app.",
   },
   {
-    q: "What if my photo won't verify my location?",
-    a: "Move closer to the pool deck and wait a few seconds for GPS to settle. If it still shows outside the site radius, you can submit anyway with a short note explaining where you were — your supervisor will review it.",
+    q: "How often are my pools inspected?",
+    a: "Bluecrest staff complete a full opening inspection on every scheduled service day, plus ongoing water tests throughout the shift. Each completed inspection appears in this app with photos and a plain-language result.",
   },
   {
-    q: "Who do I contact if I forgot my password and I'm not near a computer?",
-    a: "Use Forgot Password on the sign-in screen to get a reset link by email. If you can't access your email, call the Bluecrest office and HR will reset it for you.",
+    q: "Who do I contact for a billing question?",
+    a: "Billing is handled by Bluecrest Client Services — call the office or email clients@bluecrestamenity.com. For day-to-day service questions, message Dana Reyes from the Messages tab.",
   },
   {
-    q: "Why can't I upload a photo from my gallery?",
-    a: "Compliance photos must be captured live with GPS and timestamp verification. Profile photos and certification documents are the only uploads that allow files from your device.",
+    q: "Why can't I add another property myself?",
+    a: "Client accounts are scoped to the properties in your service agreement. If you've added a new amenity or building, your Bluecrest representative will attach it to this account.",
   },
+];
+
+export function propertyById(id: string): Property | undefined {
+  return properties.find((p) => p.id === id);
+}
+
+export function amenityById(id: string): Amenity | undefined {
+  return amenities.find((a) => a.id === id);
+}
+
+export function amenitiesFor(propertyId: string): Amenity[] {
+  return amenities.filter((a) => a.propertyId === propertyId);
+}
+
+export function inspectionById(id: string): Inspection | undefined {
+  return inspections.find((i) => i.id === id);
+}
+
+export function photosForInspection(id: string): InspectionPhoto[] {
+  return inspectionPhotos.filter((p) => p.inspectionId === id);
+}
+
+export function greeting(now = new Date()): string {
+  const h = now.getHours();
+  if (h < 12) return "Good Morning";
+  if (h < 17) return "Good Afternoon";
+  return "Good Evening";
+}
+
+export function resultLabel(result: InspectionResult): string {
+  if (result === "passed") return "Passed";
+  if (result === "notes") return "Passed with Notes";
+  return "Issue Found";
+}
+
+export function resultTone(result: InspectionResult): "green" | "amber" | "red" {
+  if (result === "passed") return "green";
+  if (result === "notes") return "amber";
+  return "red";
+}
+
+export function priorityTone(p: Priority): "neutral" | "amber" | "red" {
+  if (p === "Low") return "neutral";
+  if (p === "Medium") return "amber";
+  return "red";
+}
+
+export function issueStatusTone(s: IssueStatus): "red" | "amber" | "green" {
+  if (s === "Open") return "red";
+  if (s === "In Progress") return "amber";
+  return "green";
+}
+
+export function requestStatusTone(s: RequestStatus): "neutral" | "blue" | "amber" | "green" {
+  if (s === "Submitted") return "neutral";
+  if (s === "Acknowledged") return "blue";
+  if (s === "In Progress") return "amber";
+  return "green";
+}
+
+export function workStatusTone(s: WorkOrderStatus): "blue" | "amber" | "green" {
+  if (s === "Scheduled") return "blue";
+  if (s === "In Progress") return "amber";
+  return "green";
+}
+
+export function mapsUrl(query: string): string {
+  return `https://maps.apple.com/?q=${encodeURIComponent(query)}`;
+}
+
+/** Inclusive lookback from the demo "today" (Aug 6, 2026). */
+export function withinDays(dateIso: string, days: number, today = appToday): boolean {
+  const d = new Date(`${dateIso}T12:00:00`);
+  const end = new Date(today);
+  end.setHours(23, 59, 59, 999);
+  const start = new Date(today);
+  start.setHours(0, 0, 0, 0);
+  start.setDate(start.getDate() - (days - 1));
+  return d >= start && d <= end;
+}
+
+export const requestSteps: RequestStatus[] = [
+  "Submitted",
+  "Acknowledged",
+  "In Progress",
+  "Completed",
 ];

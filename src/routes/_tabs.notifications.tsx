@@ -1,55 +1,35 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { EmptyState, NavBar, Screen } from "@/components/ios";
 import { useApp } from "@/lib/app-state";
-import {
-  BadgeCheck,
-  Bell,
-  CheckCircle2,
-  Droplets,
-  MessageCircle,
-  ShieldCheck,
-  X,
-} from "lucide-react";
+import { Bell, ClipboardCheck, Inbox, Megaphone, MessageCircle, Wrench, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import type { NotificationType } from "@/data/bluecrest";
 
 export const Route = createFileRoute("/_tabs/notifications")({
   head: () => ({
     meta: [
-      { title: "Notifications — Bluecrest Staff" },
+      { title: "Notifications — Bluecrest Client" },
       {
         name: "description",
-        content: "Task reminders, water test alerts, photo approvals and messages from your supervisor.",
-      },
-      { property: "og:title", content: "Notifications — Bluecrest Staff" },
-      {
-        property: "og:description",
-        content: "Task reminders, water test alerts and supervisor messages in one place.",
+        content: "Inspection, issue, work order, request, and announcement alerts.",
       },
     ],
   }),
   component: NotificationsScreen,
 });
 
-const icons = {
-  task: CheckCircle2,
-  message: MessageCircle,
-  photo: BadgeCheck,
-  water: Droplets,
-  cert: ShieldCheck,
+const icons: Record<NotificationType, typeof Bell> = {
+  inspection: ClipboardCheck,
+  issue: Inbox,
+  work: Wrench,
+  request: Inbox,
+  announcement: Megaphone,
 };
 
 function NotificationsScreen() {
   const { notifications, markAllRead, dismissNotification } = useApp();
   const navigate = useNavigate();
   const groups = ["Today", "Yesterday", "Earlier"] as const;
-
-  const route = (type: string) => {
-    if (type === "message") navigate({ to: "/thread/$threadId", params: { threadId: "dana" } });
-    else if (type === "photo") navigate({ to: "/photos" });
-    else if (type === "water") navigate({ to: "/water-test", search: { siteId: "manhattan-park" } });
-    else if (type === "cert") navigate({ to: "/certifications" });
-    else navigate({ to: "/tasks" });
-  };
 
   return (
     <>
@@ -70,7 +50,7 @@ function NotificationsScreen() {
           <EmptyState
             icon={<Bell className="h-7 w-7" />}
             title="You're all caught up"
-            description="New reminders and messages will show up here."
+            description="New inspections, issues, and request updates will show up here."
           />
         ) : (
           groups.map((g) => {
@@ -83,7 +63,7 @@ function NotificationsScreen() {
                 </h2>
                 <div className="divide-y divide-border/70 overflow-hidden border border-border/70 bg-card">
                   {items.map((n) => {
-                    const Icon = icons[n.type];
+                    const Icon = icons[n.type] ?? MessageCircle;
                     return (
                       <div key={n.id} className="flex items-start gap-3 px-4 py-3">
                         <span
@@ -96,7 +76,7 @@ function NotificationsScreen() {
                         </span>
                         <button
                           type="button"
-                          onClick={() => route(n.type)}
+                          onClick={() => navigate(n.href as never)}
                           className="min-w-0 flex-1 text-left"
                         >
                           <span
@@ -105,15 +85,13 @@ function NotificationsScreen() {
                               n.unread ? "font-semibold text-foreground" : "text-foreground",
                             )}
                           >
-                            {n.unread && <span className="h-2 w-2 bg-primary" />}
+                            {n.unread && <span className="h-2 w-2 shrink-0 bg-primary" />}
                             {n.title}
                           </span>
                           <span className="mt-0.5 block text-[13px] text-muted-foreground">
                             {n.description}
                           </span>
-                          <span className="mt-1 block text-[12px] text-muted-foreground">
-                            {n.time}
-                          </span>
+                          <span className="mt-1 block text-[12px] text-muted-foreground">{n.time}</span>
                         </button>
                         <button
                           type="button"

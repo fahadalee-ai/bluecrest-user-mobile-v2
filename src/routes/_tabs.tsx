@@ -1,5 +1,5 @@
 import { Link, Outlet, createFileRoute, useLocation } from "@tanstack/react-router";
-import { Camera, Home, LayoutList, MessageCircle, UserRound } from "lucide-react";
+import { ClipboardCheck, Home, Building2, Inbox, MessageCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useApp } from "@/lib/app-state";
 
@@ -7,32 +7,36 @@ export const Route = createFileRoute("/_tabs")({
   component: TabsLayout,
 });
 
-/** Max 5 tabs — Home, Sites, Camera, Chat, Profile */
 const tabs = [
-  { to: "/home", label: "Home", icon: Home, match: ["/home", "/notifications"] },
   {
-    to: "/sites",
-    label: "Sites",
-    icon: LayoutList,
-    match: ["/sites", "/site", "/tasks", "/task", "/water", "/schedule"],
-  },
-  { to: "/camera", label: "Camera", icon: Camera, match: ["/camera", "/capture", "/photos"] },
-  { to: "/chat", label: "Chat", icon: MessageCircle, match: ["/chat", "/thread", "/compose"] },
-  {
-    to: "/profile",
-    label: "Profile",
-    icon: UserRound,
+    to: "/home",
+    label: "Home",
+    icon: Home,
     match: [
+      "/home",
+      "/notifications",
       "/profile",
       "/edit-profile",
-      "/certifications",
-      "/attendance",
-      "/incident",
+      "/change-password",
+      "/reports",
       "/settings",
       "/help",
     ],
   },
+  { to: "/properties", label: "Properties", icon: Building2, match: ["/properties", "/property", "/amenity"] },
+  {
+    to: "/inspections",
+    label: "Inspections",
+    icon: ClipboardCheck,
+    match: ["/inspections", "/inspection", "/inspection-history", "/photos"],
+  },
+  { to: "/requests", label: "Requests", icon: Inbox, match: ["/requests", "/issue", "/request", "/work-order"] },
+  { to: "/messages", label: "Messages", icon: MessageCircle, match: ["/messages", "/thread"] },
 ];
+
+function pathActive(pathname: string, match: string[]) {
+  return match.some((m) => pathname === m || pathname.startsWith(`${m}/`));
+}
 
 function TabsLayout() {
   const { pathname } = useLocation();
@@ -52,7 +56,7 @@ function TabsLayout() {
         }}
       >
         {tabs.map((t) => {
-          const active = t.match.some((m) => pathname.startsWith(m));
+          const on = pathActive(pathname, t.match);
           const Icon = t.icon;
           return (
             <Link
@@ -60,12 +64,12 @@ function TabsLayout() {
               to={t.to}
               className={cn(
                 "flex min-h-11 flex-1 flex-col items-center justify-center gap-1 text-[10px] font-semibold tracking-wide transition-colors duration-200",
-                active ? "text-white" : "text-white/55",
+                on ? "text-white" : "text-white/55",
               )}
             >
               <span className="relative flex h-7 w-7 items-center justify-center">
-                <Icon className="h-6 w-6" strokeWidth={active ? 2.4 : 1.9} />
-                {t.label === "Chat" && unread > 0 && (
+                <Icon className="h-6 w-6" strokeWidth={on ? 2.4 : 1.9} />
+                {t.label === "Messages" && unread > 0 && (
                   <span className="absolute -top-1 -right-2 flex h-4 min-w-4 items-center justify-center bg-danger px-1 text-[10px] font-bold text-white">
                     {unread}
                   </span>

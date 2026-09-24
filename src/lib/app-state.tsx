@@ -1,37 +1,42 @@
 import {
   createContext,
-  useCallback,
   useContext,
   useMemo,
   useState,
   type ReactNode,
 } from "react";
 import {
-  incidents as seedIncidents,
+  client as seedClient,
+  issues as seedIssues,
   notifications as seedNotifications,
-  tasks as seedTasks,
+  serviceRequests as seedRequests,
   threads as seedThreads,
-  waterTests as seedWaterTests,
-  type Incident,
+  type Comment,
   type Message,
   type Notification,
-  type Task,
+  type RequestPriority,
+  type ServiceRequest,
   type Thread,
-  type WaterTest,
+  type Issue,
 } from "@/data/bluecrest";
 
-export type SubmittedPhoto = {
-  id: string;
-  typeId: string;
-  label: string;
-  siteId: string;
-  dataUrl: string;
-  timestamp: string;
-  coords: string;
-  address: string;
-  verified: boolean;
-  approval: "approved" | "pending";
-  note?: string;
+export type ClientProfile = {
+  name: string;
+  firstName: string;
+  title: string;
+  company: string;
+  email: string;
+  phone: string;
+  avatar: string;
+  billingAddress: string;
+};
+
+export type NotifPrefs = {
+  inspections: boolean;
+  issues: boolean;
+  work: boolean;
+  requests: boolean;
+  announcements: boolean;
 };
 
 type AppState = {
@@ -39,134 +44,168 @@ type AppState = {
   signIn: () => void;
   signOut: () => void;
 
-  clockedInAt: number | null;
-  activeSiteId: string;
-  setActiveSiteId: (id: string) => void;
-  clockIn: (siteId: string) => void;
-  clockOut: () => void;
-
-  tasks: Task[];
-  completeTask: (taskId: string) => void;
+  client: ClientProfile;
+  updateClient: (patch: Partial<ClientProfile>) => void;
 
   notifications: Notification[];
   markAllRead: () => void;
   dismissNotification: (id: string) => void;
 
-  waterTests: WaterTest[];
-  addWaterTest: (t: WaterTest) => void;
-
-  photos: SubmittedPhoto[];
-  addPhoto: (p: SubmittedPhoto) => void;
-
-  captures: Record<string, string>;
-  setCapture: (slot: string, dataUrl: string) => void;
-  clearCapture: (slot: string) => void;
-
   threads: Thread[];
   sendMessage: (threadId: string, msg: Message) => void;
   openThread: (threadId: string) => void;
 
-  incidents: Incident[];
-  addIncident: (i: Incident) => void;
+  issues: Issue[];
+  addIssueComment: (issueId: string, text: string) => void;
 
-  broadcastAcknowledged: boolean;
-  acknowledgeBroadcast: () => void;
+  requests: ServiceRequest[];
+  addRequest: (r: ServiceRequest) => void;
+  addRequestComment: (requestId: string, text: string) => void;
+
+  notifPrefs: NotifPrefs;
+  setNotifPref: (key: keyof NotifPrefs, value: boolean) => void;
 };
 
 const Ctx = createContext<AppState | null>(null);
 
+function nowStamp() {
+  return new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+}
+
 export function AppStateProvider({ children }: { children: ReactNode }) {
   const [signedIn, setSignedIn] = useState(false);
-  const [clockedInAt, setClockedInAt] = useState<number | null>(null);
-  const [activeSiteId, setActiveSiteId] = useState("manhattan-park");
-  const [tasks, setTasks] = useState<Task[]>(seedTasks);
+  const [client, setClient] = useState<ClientProfile>({
+    name: seedClient.name,
+    firstName: seedClient.firstName,
+    title: seedClient.title,
+    company: seedClient.company,
+    email: seedClient.email,
+    phone: seedClient.phone,
+    avatar: seedClient.avatar,
+    billingAddress: seedClient.billingAddress,
+  });
   const [notifications, setNotifications] = useState<Notification[]>(seedNotifications);
-  const [waterTests, setWaterTests] = useState<WaterTest[]>(seedWaterTests);
-  const [photos, setPhotos] = useState<SubmittedPhoto[]>([]);
-  const [captures, setCaptures] = useState<Record<string, string>>({});
   const [threads, setThreads] = useState<Thread[]>(seedThreads);
-  const [incidents, setIncidents] = useState<Incident[]>(seedIncidents);
-  const [broadcastAcknowledged, setBroadcastAcknowledged] = useState(false);
+  const [issues, setIssues] = useState<Issue[]>(seedIssues);
+  const [requests, setRequests] = useState<ServiceRequest[]>(seedRequests);
+  const [notifPrefs, setNotifPrefs] = useState<NotifPrefs>({
+    inspections: true,
+    issues: true,
+    work: true,
+    requests: true,
+    announcements: true,
+  });
+
+  const appendThreadMessage = (threadId: string, msg: Message, create?: Partial<Thread>) => {
+    setThreads((prev) => {
+      const exists = prev.some((t) => t.id === threadId);
+      if (!exists && create) {
+        return [
+          {
+            id: threadId,
+            kind: create.kind ?? "direct",
+            name: create.name ?? "Bluecrest",
+            subtitle: msg.text,
+            unread: 0,
+            lastTime: msg.time,
+            messages: [msg],
+            ...create,
+          },
+          ...prev,
+        ];
+      }
+      return prev.map((t) =>
+        t.id === threadId
+          ? { ...t, messages: [...t.messages, msg], lastTime: msg.time, subtitle: msg.text }
+          : t,
+      );
+    });
+  };
 
   const value = useMemo<AppState>(
     () => ({
       signedIn,
       signIn: () => setSignedIn(true),
-      signOut: () => {
-        setSignedIn(false);
-        setClockedInAt(null);
-      },
-      clockedInAt,
-      activeSiteId,
-      setActiveSiteId,
-      clockIn: (siteId: string) => {
-        setActiveSiteId(siteId);
-        setClockedInAt(Date.now());
-      },
-      clockOut: () => setClockedInAt(null),
-      tasks,
-      completeTask: (taskId: string) =>
-        setTasks((prev) =>
-          prev.map((t) =>
-            t.id === taskId
-              ? {
-                  ...t,
-                  status: t.requiresSignoff ? "review" : "completed",
-                  completedTime: new Date().toLocaleTimeString([], {
-                    hour: "numeric",
-                    minute: "2-digit",
-                  }),
-                }
-              : t,
-          ),
-        ),
+      signOut: () => setSignedIn(false),
+      client,
+      updateClient: (patch) => setClient((c) => ({ ...c, ...patch })),
       notifications,
-      markAllRead: () =>
-        setNotifications((prev) => prev.map((n) => ({ ...n, unread: false }))),
-      dismissNotification: (id: string) =>
-        setNotifications((prev) => prev.filter((n) => n.id !== id)),
-      waterTests,
-      addWaterTest: (t: WaterTest) => setWaterTests((prev) => [t, ...prev]),
-      photos,
-      addPhoto: (p: SubmittedPhoto) => setPhotos((prev) => [p, ...prev]),
-      captures,
-      setCapture: (slot: string, dataUrl: string) =>
-        setCaptures((prev) => ({ ...prev, [slot]: dataUrl })),
-      clearCapture: (slot: string) =>
-        setCaptures((prev) => {
-          const next = { ...prev };
-          delete next[slot];
-          return next;
-        }),
+      markAllRead: () => setNotifications((prev) => prev.map((n) => ({ ...n, unread: false }))),
+      dismissNotification: (id) => setNotifications((prev) => prev.filter((n) => n.id !== id)),
       threads,
-      sendMessage: (threadId: string, msg: Message) =>
-        setThreads((prev) =>
-          prev.map((t) =>
-            t.id === threadId
-              ? { ...t, messages: [...t.messages, msg], lastTime: msg.time, subtitle: msg.text }
-              : t,
-          ),
-        ),
-      openThread: (threadId: string) =>
+      sendMessage: (threadId, msg) => appendThreadMessage(threadId, msg),
+      openThread: (threadId) =>
         setThreads((prev) => prev.map((t) => (t.id === threadId ? { ...t, unread: 0 } : t))),
-      incidents,
-      addIncident: (i: Incident) => setIncidents((prev) => [i, ...prev]),
-      broadcastAcknowledged,
-      acknowledgeBroadcast: () => setBroadcastAcknowledged(true),
+      issues,
+      addIssueComment: (issueId, text) => {
+        const comment: Comment = {
+          id: `c-${Date.now()}`,
+          from: "me",
+          sender: client.name,
+          text,
+          time: nowStamp(),
+        };
+        setIssues((prev) =>
+          prev.map((i) => (i.id === issueId ? { ...i, comments: [...i.comments, comment] } : i)),
+        );
+        appendThreadMessage(
+          `issue-${issueId}`,
+          { id: comment.id, from: "me", sender: client.name, text, time: comment.time, read: false },
+          { kind: "issue", name: "Issue follow-up" },
+        );
+      },
+      requests,
+      addRequest: (r) => {
+        setRequests((prev) => [r, ...prev]);
+        if (r.comments[0]) {
+          appendThreadMessage(
+            r.threadId,
+            {
+              id: r.comments[0].id,
+              from: "me",
+              sender: client.name,
+              text: r.description,
+              time: r.comments[0].time,
+              read: false,
+            },
+            {
+              kind: "request",
+              name: `Request #${r.number}`,
+              context: {
+                label: `Re: Service Request #${r.number}`,
+                to: "/request/$requestId",
+                params: { requestId: r.id },
+              },
+            },
+          );
+        }
+      },
+      addRequestComment: (requestId, text) => {
+        const comment: Comment = {
+          id: `c-${Date.now()}`,
+          from: "me",
+          sender: client.name,
+          text,
+          time: nowStamp(),
+        };
+        setRequests((prev) =>
+          prev.map((r) =>
+            r.id === requestId ? { ...r, comments: [...r.comments, comment] } : r,
+          ),
+        );
+        appendThreadMessage(`request-${requestId}`, {
+          id: comment.id,
+          from: "me",
+          sender: client.name,
+          text,
+          time: comment.time,
+          read: false,
+        });
+      },
+      notifPrefs,
+      setNotifPref: (key, value) => setNotifPrefs((p) => ({ ...p, [key]: value })),
     }),
-    [
-      signedIn,
-      clockedInAt,
-      activeSiteId,
-      tasks,
-      notifications,
-      waterTests,
-      photos,
-      captures,
-      threads,
-      incidents,
-      broadcastAcknowledged,
-    ],
+    [signedIn, client, notifications, threads, issues, requests, notifPrefs],
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
@@ -178,21 +217,11 @@ export function useApp() {
   return ctx;
 }
 
-export function useElapsed(since: number | null) {
-  const [, force] = useState(0);
-  const tick = useCallback(() => force((n) => n + 1), []);
-  useIntervalEffect(tick, since ? 1000 : null);
-  if (!since) return "00:00:00";
-  const s = Math.floor((Date.now() - since) / 1000);
-  const pad = (n: number) => String(n).padStart(2, "0");
-  return `${pad(Math.floor(s / 3600))}:${pad(Math.floor((s % 3600) / 60))}:${pad(s % 60)}`;
-}
-
-import { useEffect } from "react";
-function useIntervalEffect(fn: () => void, delay: number | null) {
-  useEffect(() => {
-    if (delay === null) return;
-    const id = setInterval(fn, delay);
-    return () => clearInterval(id);
-  }, [fn, delay]);
-}
+export type NewRequestDraft = {
+  propertyId: string;
+  amenityId: string;
+  title: string;
+  description: string;
+  priority: RequestPriority;
+  photos: string[];
+};

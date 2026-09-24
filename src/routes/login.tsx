@@ -1,5 +1,6 @@
 import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 import {
   AuthButton,
   AuthField,
@@ -11,15 +12,15 @@ import { useApp } from "@/lib/app-state";
 export const Route = createFileRoute("/login")({
   head: () => ({
     meta: [
-      { title: "Sign In — Bluecrest Staff" },
+      { title: "Sign In — Bluecrest Client" },
       {
         name: "description",
-        content: "Sign in to your Bluecrest Amenity Management staff account to start your shift.",
+        content: "Sign in to view your Bluecrest-serviced properties, inspections, and requests.",
       },
-      { property: "og:title", content: "Sign In — Bluecrest Staff" },
+      { property: "og:title", content: "Sign In — Bluecrest Client" },
       {
         property: "og:description",
-        content: "Sign in to your Bluecrest staff account to start your shift.",
+        content: "Sign in to view your properties and service history.",
       },
     ],
   }),
@@ -29,13 +30,14 @@ export const Route = createFileRoute("/login")({
 function Login() {
   const navigate = useNavigate();
   const { signIn } = useApp();
-  const [email, setEmail] = useState("m.bennett@bluecrestamenity.com");
+  const [email, setEmail] = useState("s.kim@related.com");
   const [password, setPassword] = useState("••••••••");
+  const [show, setShow] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
 
   const submit = () => {
     const next: typeof errors = {};
-    if (!/^\S+@\S+\.\S+$/.test(email)) next.email = "Enter a valid work email address.";
+    if (!/^\S+@\S+\.\S+$/.test(email)) next.email = "Enter a valid email address.";
     if (password.length < 6) next.password = "Password must be at least 6 characters.";
     setErrors(next);
     if (Object.keys(next).length) return;
@@ -46,10 +48,10 @@ function Login() {
   return (
     <AuthShell
       title="Welcome Back"
-      subtitle="Sign in with your Bluecrest work email to start your shift."
+      subtitle="Sign in to view your properties"
       footer={
         <p className="text-center text-[12px] text-[#093370]/50">
-          Bluecrest Amenity Management · Ozone Park, NY
+          Protected by Bluecrest secure client access
         </p>
       }
     >
@@ -62,19 +64,29 @@ function Login() {
             className={authInputClass}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="you@bluecrestamenity.com"
+            placeholder="you@company.com"
           />
         </AuthField>
 
         <AuthField label="Password" error={errors.password}>
-          <input
-            type="password"
-            autoComplete="current-password"
-            className={authInputClass}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Enter your password"
-          />
+          <div className="relative">
+            <input
+              type={show ? "text" : "password"}
+              autoComplete="current-password"
+              className={`${authInputClass} pr-12`}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Enter your password"
+            />
+            <button
+              type="button"
+              aria-label={show ? "Hide password" : "Show password"}
+              onClick={() => setShow((v) => !v)}
+              className="absolute top-0 right-0 flex h-12 w-12 items-center justify-center text-[#0258B8]"
+            >
+              {show ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+            </button>
+          </div>
         </AuthField>
 
         <div className="flex justify-end">
@@ -87,6 +99,15 @@ function Login() {
         </div>
 
         <AuthButton onClick={submit}>Sign In</AuthButton>
+
+        <div className="flex items-center gap-3 pt-1">
+          <span className="h-px flex-1 bg-[#093370]/12" />
+          <span className="text-[12px] font-semibold tracking-wide text-[#093370]/45 uppercase">
+            Don&apos;t have access yet?
+          </span>
+          <span className="h-px flex-1 bg-[#093370]/12" />
+        </div>
+
         <AuthButton variant="ghost" onClick={() => navigate({ to: "/access" })}>
           Learn How to Get Access
         </AuthButton>

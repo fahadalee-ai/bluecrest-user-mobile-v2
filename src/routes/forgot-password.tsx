@@ -11,15 +11,15 @@ import {
 export const Route = createFileRoute("/forgot-password")({
   head: () => ({
     meta: [
-      { title: "Reset Password — Bluecrest Staff" },
+      { title: "Reset Password — Bluecrest Client" },
       {
         name: "description",
-        content: "Request a password reset link for your Bluecrest Amenity Management staff account.",
+        content: "Request a password reset link for your Bluecrest client portal account.",
       },
-      { property: "og:title", content: "Reset Password — Bluecrest Staff" },
+      { property: "og:title", content: "Reset Password — Bluecrest Client" },
       {
         property: "og:description",
-        content: "Request a password reset link for your Bluecrest staff account.",
+        content: "Request a password reset link for your Bluecrest client account.",
       },
     ],
   }),
@@ -41,7 +41,7 @@ function ForgotPassword() {
 
   const send = () => {
     if (!/^\S+@\S+\.\S+$/.test(email)) {
-      setError("Enter the work email on your Bluecrest account.");
+      setError("Enter the email on your Bluecrest client account.");
       return;
     }
     setError("");
@@ -56,7 +56,7 @@ function ForgotPassword() {
       subtitle={
         sent
           ? `We sent a reset link to ${email}. The link expires in 30 minutes.`
-          : "Enter your work email and we'll send a secure link to set a new password."
+          : "Enter your email and we'll send a secure link to set a new password."
       }
     >
       {!sent ? (
@@ -68,7 +68,7 @@ function ForgotPassword() {
               className={authInputClass}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@bluecrestamenity.com"
+              placeholder="you@company.com"
             />
           </AuthField>
           <AuthButton onClick={send}>Send Reset Link</AuthButton>
@@ -79,8 +79,8 @@ function ForgotPassword() {
             <MailCheck className="h-8 w-8" strokeWidth={1.6} />
           </div>
           <p className="text-[15px] leading-relaxed text-[#093370]/70">
-            Didn&apos;t get it? Check spam, or resend after the timer. Still stuck? Call the Bluecrest
-            office and HR will reset it for you.
+            Didn&apos;t get it? Check spam, or resend after the timer. Still stuck? Call the
+            Bluecrest office and Client Services will reset it for you.
           </p>
           <div className="mt-8 space-y-3">
             <AuthButton

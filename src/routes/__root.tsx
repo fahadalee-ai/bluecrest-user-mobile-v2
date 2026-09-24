@@ -83,11 +83,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         name: "viewport",
         content: "width=device-width, initial-scale=1, viewport-fit=cover",
       },
-      { title: "Bluecrest Staff" },
+      { title: "Bluecrest Client" },
       {
         name: "description",
         content:
-          "Bluecrest Amenity Management staff app for lifeguards: shifts, tasks, water testing and verified photos.",
+          "Bluecrest Amenity Management client portal — inspection reports, photo proof, issues, and a direct line to your representative.",
       },
       { name: "author", content: "Bluecrest Amenity Management" },
       { property: "og:type", content: "website" },

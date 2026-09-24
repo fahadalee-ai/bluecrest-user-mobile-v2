@@ -1,51 +1,66 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { Badge, EmptyState, NavBar, Screen, SegmentedControl } from "@/components/ios";
-import { useApp, type SubmittedPhoto } from "@/lib/app-state";
-import { sites } from "@/data/bluecrest";
-import { Camera, CheckCircle2, Clock, MapPin, X } from "lucide-react";
+import { EmptyState, NavBar, Screen, SelectField } from "@/components/ios";
+import { PhotoLightbox } from "@/components/client/widgets";
+import { amenities, inspectionPhotos, properties } from "@/data/bluecrest";
+import { Images } from "lucide-react";
 
 export const Route = createFileRoute("/_tabs/photos")({
-  head: () => ({
-    meta: [
-      { title: "My Photos — Bluecrest Staff" },
-      {
-        name: "description",
-        content: "Every verification photo you've submitted, with GPS metadata and approval status.",
-      },
-      { property: "og:title", content: "My Photos — Bluecrest Staff" },
-      {
-        property: "og:description",
-        content: "Submitted verification photos with GPS metadata and approval status.",
-      },
-    ],
+  validateSearch: (s: Record<string, unknown>) => ({
+    propertyId: typeof s.propertyId === "string" ? s.propertyId : undefined,
+    amenityId: typeof s.amenityId === "string" ? s.amenityId : undefined,
   }),
-  component: MyPhotos,
+  head: () => ({
+    meta: [{ title: "Photo Gallery — Bluecrest Client" }],
+  }),
+  component: PhotoGallery,
 });
 
-function MyPhotos() {
-  const { photos } = useApp();
-  const [filter, setFilter] = useState("All");
-  const [open, setOpen] = useState<SubmittedPhoto | null>(null);
+function PhotoGallery() {
+  const search = Route.useSearch();
+  const [propertyId, setPropertyId] = useState(search.propertyId ?? "all");
+  const [amenityId, setAmenityId] = useState(search.amenityId ?? "all");
+  const [open, setOpen] = useState<(typeof inspectionPhotos)[number] | null>(null);
 
-  const items = photos.filter((p) => filter === "All" || p.siteId === filter);
+  const amenityOptions = amenities.filter((a) => propertyId === "all" || a.propertyId === propertyId);
+  const items = inspectionPhotos.filter(
+    (p) =>
+      (propertyId === "all" || p.propertyId === propertyId) &&
+      (amenityId === "all" || p.amenityId === amenityId),
+  );
 
   return (
     <>
-      <NavBar title="My Submitted Photos" />
+      <NavBar title="Photo Gallery" />
       <Screen>
-        <SegmentedControl
-          className="mb-4"
-          value={filter}
-          onChange={setFilter}
-          options={[{ value: "All", label: "All sites" }, ...sites.map((s) => ({ value: s.id, label: s.name.split(" ")[0]! }))]}
-        />
-
+        <div className="mb-4 grid grid-cols-2 gap-3">
+          <SelectField
+            label="Property"
+            value={propertyId}
+            onChange={(v) => {
+              setPropertyId(v);
+              setAmenityId("all");
+            }}
+            options={[
+              { value: "all", label: "All" },
+              ...properties.map((p) => ({ value: p.id, label: p.name })),
+            ]}
+          />
+          <SelectField
+            label="Amenity"
+            value={amenityId}
+            onChange={setAmenityId}
+            options={[
+              { value: "all", label: "All" },
+              ...amenityOptions.map((a) => ({ value: a.id, label: a.name })),
+            ]}
+          />
+        </div>
         {items.length === 0 ? (
           <EmptyState
-            icon={<Camera className="h-7 w-7" />}
+            icon={<Images className="h-7 w-7" />}
             title="No photos yet"
-            description="Verification photos you capture will appear here with their GPS and timestamp."
+            description="Verified inspection photos for this filter will appear here."
           />
         ) : (
           <div className="grid grid-cols-3 gap-2">
@@ -54,56 +69,21 @@ function MyPhotos() {
                 key={p.id}
                 type="button"
                 onClick={() => setOpen(p)}
-                className="relative overflow-hidden border border-border/70"
+                className="overflow-hidden border border-border/70"
               >
-                <img src={p.dataUrl} alt={p.label} className="h-28 w-full object-cover" />
-                <span className="absolute top-1 right-1 flex h-5 w-5 items-center justify-center bg-card/90 text-success">
-                  <CheckCircle2 className="h-4 w-4" />
-                </span>
+                <img src={p.src} alt={p.label} className="h-28 w-full object-cover" />
               </button>
             ))}
           </div>
         )}
       </Screen>
-
       {open && (
-        <div className="fixed inset-0 z-50 mx-auto flex max-w-[520px] flex-col bg-black">
-          <div className="flex justify-end p-4">
-            <button
-              type="button"
-              aria-label="Close"
-              onClick={() => setOpen(null)}
-              className="flex h-11 w-11 items-center justify-center bg-white/15 text-white"
-            >
-              <X className="h-5 w-5" />
-            </button>
-          </div>
-          <img src={open.dataUrl} alt={open.label} className="min-h-0 flex-1 object-contain" />
-          <div className="bg-card p-5 pb-8">
-            <p className="text-[17px] font-semibold">{open.label}</p>
-            <p className="mt-1 text-[15px] text-muted-foreground">{open.timestamp}</p>
-            <p className="mt-1 flex items-center gap-1.5 text-[13px] text-muted-foreground">
-              <MapPin className="h-4 w-4" /> {open.coords} · {open.address}
-            </p>
-            <div className="mt-3 flex flex-wrap gap-2">
-              <Badge tone={open.verified ? "green" : "amber"}>
-                {open.verified ? "GPS Verified" : "Outside radius"}
-              </Badge>
-              <Badge tone={open.approval === "approved" ? "green" : "amber"}>
-                {open.approval === "approved" ? (
-                  <>
-                    <CheckCircle2 className="h-3.5 w-3.5" /> Approved
-                  </>
-                ) : (
-                  <>
-                    <Clock className="h-3.5 w-3.5" /> Pending Review
-                  </>
-                )}
-              </Badge>
-            </div>
-            {open.note && <p className="mt-3 text-[15px]">{open.note}</p>}
-          </div>
-        </div>
+        <PhotoLightbox
+          src={open.src}
+          label={open.label}
+          timestamp={open.timestamp}
+          onClose={() => setOpen(null)}
+        />
       )}
     </>
   );

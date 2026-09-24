@@ -6,16 +6,16 @@ import { brand } from "@/data/bluecrest";
 export const Route = createFileRoute("/access")({
   head: () => ({
     meta: [
-      { title: "How to Get Access — Bluecrest Staff" },
+      { title: "How to Get Access — Bluecrest Client" },
       {
         name: "description",
         content:
-          "Bluecrest staff accounts are created by your supervisor or the Bluecrest office. Here's how to request access.",
+          "Client portal accounts are set up by Bluecrest when a service agreement begins.",
       },
-      { property: "og:title", content: "How to Get Access — Bluecrest Staff" },
+      { property: "og:title", content: "How to Get Access — Bluecrest Client" },
       {
         property: "og:description",
-        content: "Bluecrest staff accounts are invite-only and created by your supervisor.",
+        content: "Bluecrest client accounts are invite-only and set up by your representative.",
       },
     ],
   }),
@@ -28,37 +28,41 @@ function AccessScreen() {
   return (
     <AuthShell
       showBack
-      title="Accounts Are Invite-Only"
-      subtitle="For site security and compliance, Bluecrest staff accounts are created only by an Administrator or your Site Supervisor."
+      title="Invite-Only Access"
+      subtitle="Client portal accounts are set up by Bluecrest when a service agreement begins — not as a self-serve signup."
     >
       <div className="mb-6 flex h-14 w-14 items-center justify-center bg-[#0258B8]/10 text-[#0258B8]">
         <ShieldCheck className="h-7 w-7" strokeWidth={1.6} />
       </div>
 
       <p className="text-[15px] leading-relaxed text-[#093370]/70">
-        There is no public sign-up. Contact the office below and your supervisor will issue credentials
-        for your assigned sites.
+        Client access is set up by your Bluecrest account representative as part of your service
+        agreement. If you manage a Bluecrest-serviced property and don&apos;t yet have access, reach
+        out to your representative or our office.
       </p>
 
       <div className="mt-7 border border-[#093370]/15 bg-[rgba(9,51,112,0.03)] p-4">
         <p className="text-[12px] font-semibold tracking-[0.14em] text-[#093370]/55 uppercase">
-          Contact the Bluecrest Office
+          Contact Bluecrest
         </p>
         <a
           href={`tel:${brand.phone.replace(/\D/g, "")}`}
           className="mt-4 flex min-h-12 items-center gap-3 border-b border-[#093370]/10 text-[17px] text-[#093370]"
         >
           <Phone className="h-5 w-5 shrink-0 text-[#0258B8]" />
-          {brand.phone}
+          Call Bluecrest Office
         </a>
         <a
           href={`mailto:${brand.email}`}
-          className="flex min-h-12 items-center gap-3 border-b border-[#093370]/10 text-[17px] break-all text-[#093370]"
+          className="flex min-h-12 items-center gap-3 text-[17px] text-[#093370]"
         >
           <Mail className="h-5 w-5 shrink-0 text-[#0258B8]" />
-          {brand.email}
+          Email Client Services
         </a>
-        <p className="mt-3 text-[13px] leading-relaxed text-[#093370]/55">{brand.address}</p>
+        <p className="mt-3 text-[13px] leading-relaxed text-[#093370]/55">
+          {brand.phone} · {brand.email}
+        </p>
+        <p className="mt-1 text-[13px] leading-relaxed text-[#093370]/55">{brand.address}</p>
       </div>
 
       <div className="mt-8">

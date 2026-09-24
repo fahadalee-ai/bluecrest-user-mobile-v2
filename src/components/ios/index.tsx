@@ -43,7 +43,7 @@ export function NavBar({
         <h1 className="flex-1 truncate text-center text-[17px] font-semibold text-foreground">
           {large ? "" : title}
         </h1>
-        <div className="flex w-11 shrink-0 items-center justify-end">{trailing}</div>
+        <div className="flex min-w-11 shrink-0 items-center justify-end">{trailing}</div>
       </div>
       {large && (
         <h1 className="px-[18px] pb-2 text-large-title text-navy">{title}</h1>

@@ -4,10 +4,18 @@
 
 @custom-variant dark (&:is(.dark *));
 
+@import "@fontsource/cormorant-upright/600.css";
+@import "@fontsource/cormorant-upright/700.css";
+@import "@fontsource/karla/400.css";
+@import "@fontsource/karla/500.css";
+@import "@fontsource/karla/600.css";
+@import "@fontsource/karla/700.css";
+
 /*
- * Bluecrest Staff — iOS HIG design system
+ * Bluecrest Client — iOS HIG design system
  * Brand: Navy #093370, Blue #0258B8
- * Spec: 0 radius, SF Pro, 8pt grid, ≥44pt targets, 44pt nav, 49pt tab bar
+ * Headings: Cormorant Upright · Body: Karla
+ * Spec: 0 radius, 8pt grid, ≥44pt targets, 44pt nav, 49pt tab bar
  * Safe area · Screen margin 16–20 · Component gap 8–16 · Section gap 24–32
  */
 
@@ -63,11 +71,9 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
-  /* SF Pro via system stack (Dynamic Type respects user text size) */
-  --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
-    "Helvetica Neue", Helvetica, Arial, sans-serif;
-  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display",
-    "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-display: "Cormorant Upright", "Times New Roman", serif;
+  --font-sans: "Karla", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial,
+    sans-serif;
   --text-large-title: 2.125rem; /* 34 */
   --text-title: 1.75rem; /* 28 */
   --text-title3: 1.25rem; /* 20 */
