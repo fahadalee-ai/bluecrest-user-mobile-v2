@@ -2,8 +2,6 @@ import type { CSSProperties, ReactNode } from "react";
 import { ChevronLeft } from "lucide-react";
 import { useCanGoBack, useRouter } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
-import logoColor from "@/assets/bluecrest-logo.png";
-import logoWhite from "@/assets/bluecrest-logo-white.png";
 import authBg from "@/assets/auth-pool.jpg";
 
 /** Sharp-corner primary CTA for auth / onboarding surfaces. Min 48pt height. */
@@ -122,22 +120,30 @@ export function BrandLogoMark({
   className?: string;
   variant?: "white" | "color";
 }) {
-  const src = variant === "white" ? logoWhite : logoColor;
+  const light = variant === "white";
 
   return (
-    <img
-      src={src}
-      alt="Bluecrest Amenity Management"
-      width={width}
-      height={Math.round(width * 0.3)}
-      className={cn(
-        "h-auto max-w-full object-contain",
-        // Knock out the baked-in black PNG background on dark surfaces
-        variant === "white" && "mix-blend-screen",
-        className,
-      )}
+    <div
+      className={cn("flex flex-col items-center text-center", className)}
       style={{ width }}
-    />
+    >
+      <span
+        className={cn(
+          "font-display text-[42px] leading-none tracking-tight",
+          light ? "text-white" : "text-[#093370]",
+        )}
+      >
+        Bluecrest
+      </span>
+      <span
+        className={cn(
+          "mt-2.5 text-[11px] font-semibold tracking-[0.28em] uppercase",
+          light ? "text-white/70" : "text-[#093370]/55",
+        )}
+      >
+        Amenity Management
+      </span>
+    </div>
   );
 }
 

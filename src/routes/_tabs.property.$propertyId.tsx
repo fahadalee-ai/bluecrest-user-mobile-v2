@@ -1,23 +1,12 @@
 import { Link, createFileRoute, notFound } from "@tanstack/react-router";
 import { Badge, Card, NavBar, Screen, SectionHeader } from "@/components/ios";
-import {
-  amenitiesFor,
-  inspections,
-  issues,
-  mapsUrl,
-  properties,
-  representative,
-} from "@/data/bluecrest";
+import { inspections, issues, mapsUrl, representative } from "@/data/bluecrest";
+import { useApp } from "@/lib/app-state";
 import { ChevronRight, ExternalLink, MessageCircle } from "lucide-react";
 
 export const Route = createFileRoute("/_tabs/property/$propertyId")({
-  loader: ({ params }) => {
-    const p = properties.find((x) => x.id === params.propertyId);
-    if (!p) throw notFound();
-    return { name: p.name };
-  },
-  head: ({ loaderData }) => ({
-    meta: [{ title: loaderData ? `${loaderData.name} — Bluecrest Client` : "Property" }],
+  head: () => ({
+    meta: [{ title: "Property — Bluecrest Client" }],
   }),
   notFoundComponent: () => (
     <Screen>
@@ -29,8 +18,10 @@ export const Route = createFileRoute("/_tabs/property/$propertyId")({
 
 function PropertyDetail() {
   const { propertyId } = Route.useParams();
-  const property = properties.find((p) => p.id === propertyId)!;
-  const list = amenitiesFor(propertyId);
+  const { properties, amenities } = useApp();
+  const property = properties.find((p) => p.id === propertyId);
+  if (!property) throw notFound();
+  const list = amenities.filter((a) => a.propertyId === propertyId);
   const last = inspections.find((i) => i.propertyId === propertyId);
   const open = issues.filter((i) => i.propertyId === propertyId && i.status !== "Resolved");
 

@@ -8,11 +8,13 @@ export function PhotoLightbox({
   src,
   label,
   timestamp,
+  context,
   onClose,
 }: {
   src: string;
   label: string;
   timestamp?: string;
+  context?: string;
   onClose: () => void;
 }) {
   return (
@@ -30,12 +32,15 @@ export function PhotoLightbox({
       </div>
       <img src={src} alt={label} className="min-h-0 flex-1 object-contain" />
       <div className="px-4 pb-[max(1.5rem,var(--safe-bottom))]">
-        {timestamp && (
-          <p className="flex items-center gap-2 text-[13px] text-white/80">
-            <BadgeCheck className="h-4 w-4 text-success" />
-            Verified · {timestamp}
-          </p>
-        )}
+        <div className="space-y-1">
+          {timestamp && (
+            <p className="flex items-center gap-2 text-[13px] text-white/80">
+              <BadgeCheck className="h-4 w-4 text-success" />
+              Verified · {timestamp}
+            </p>
+          )}
+          {context && <p className="text-[12px] text-white/60">{context}</p>}
+        </div>
       </div>
     </div>
   );
@@ -44,7 +49,7 @@ export function PhotoLightbox({
 export function PhotoGrid({
   photos,
 }: {
-  photos: { id: string; src: string; label: string; timestamp?: string }[];
+  photos: { id: string; src: string; label: string; timestamp?: string; context?: string }[];
 }) {
   const [open, setOpen] = useState<(typeof photos)[number] | null>(null);
   if (!photos.length) return null;
@@ -67,6 +72,7 @@ export function PhotoGrid({
           src={open.src}
           label={open.label}
           timestamp={open.timestamp}
+          context={open.context}
           onClose={() => setOpen(null)}
         />
       )}

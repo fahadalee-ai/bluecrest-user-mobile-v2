@@ -12,7 +12,6 @@ import {
   greeting,
   inspections,
   issues,
-  properties,
   propertyById,
   resultLabel,
   resultTone,
@@ -24,6 +23,7 @@ import {
   ChevronRight,
   ClipboardCheck,
   FilePlus2,
+  Layers,
   MessageCircle,
 } from "lucide-react";
 
@@ -47,7 +47,7 @@ export const Route = createFileRoute("/_tabs/home")({
 
 function HomeScreen() {
   const navigate = useNavigate();
-  const { client, notifications, requests } = useApp();
+  const { client, notifications, requests, properties } = useApp();
   const unread = notifications.filter((n) => n.unread).length;
   const openIssues = issues.filter((i) => i.status !== "Resolved");
   const pendingRequests = requests.filter((r) => r.status !== "Completed");
@@ -92,7 +92,11 @@ function HomeScreen() {
           <p className="text-[13px] tracking-wide text-white/70 uppercase">Portfolio</p>
           <p className="mt-1 flex items-center gap-2 font-display text-[28px] leading-tight">
             {properties.length} Properties ·{" "}
-            {attention ? "1 Needs Attention" : "All Compliant"}
+            {attention ? (
+              <span className="text-warning">1 Needs Attention</span>
+            ) : (
+              "All Compliant"
+            )}
             {attention ? (
               <span className="inline-block h-2.5 w-2.5 bg-warning" />
             ) : (
@@ -126,7 +130,7 @@ function HomeScreen() {
       </SectionHeader>
       <div className="mb-6 flex gap-3 overflow-x-auto hide-scrollbar">
         {recentInspections.map((insp) => {
-          const prop = propertyById(insp.propertyId);
+          const prop = properties.find((p) => p.id === insp.propertyId) ?? propertyById(insp.propertyId);
           return (
             <Link
               key={insp.id}
@@ -170,10 +174,13 @@ function HomeScreen() {
                 params={{ issueId: iss.id }}
                 className="flex min-h-[52px] items-center gap-3 px-4 py-3 active:bg-muted"
               >
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center bg-accent text-primary">
+                  <Layers className="h-4 w-4" />
+                </span>
                 <span className="min-w-0 flex-1">
                   <span className="block truncate text-[15px] font-medium">{iss.title}</span>
                   <span className="block text-[12px] text-muted-foreground">
-                    {propertyById(iss.propertyId)?.name}
+                    {iss.type} · {propertyById(iss.propertyId)?.name}
                   </span>
                 </span>
                 <Badge tone={issueStatusTone(iss.status)}>{iss.status}</Badge>

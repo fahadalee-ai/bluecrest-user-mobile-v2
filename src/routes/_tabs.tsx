@@ -1,4 +1,5 @@
-import { Link, Outlet, createFileRoute, useLocation } from "@tanstack/react-router";
+import { Link, Outlet, createFileRoute, useLocation, useNavigate } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { ClipboardCheck, Home, Building2, Inbox, MessageCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useApp } from "@/lib/app-state";
@@ -23,7 +24,7 @@ const tabs = [
       "/help",
     ],
   },
-  { to: "/properties", label: "Properties", icon: Building2, match: ["/properties", "/property", "/amenity"] },
+  { to: "/properties", label: "Properties", icon: Building2, match: ["/properties", "/property", "/property-new", "/amenity"] },
   {
     to: "/inspections",
     label: "Inspections",
@@ -40,8 +41,15 @@ function pathActive(pathname: string, match: string[]) {
 
 function TabsLayout() {
   const { pathname } = useLocation();
-  const { threads } = useApp();
+  const navigate = useNavigate();
+  const { threads, signedIn, sessionReady } = useApp();
   const unread = threads.reduce((n, t) => n + t.unread, 0);
+
+  useEffect(() => {
+    if (sessionReady && !signedIn) navigate({ to: "/login" });
+  }, [sessionReady, signedIn, navigate]);
+
+  if (!sessionReady || !signedIn) return null;
 
   return (
     <div className="min-h-screen bg-background">

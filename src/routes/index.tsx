@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { BrandAtmosphere, BrandLogoMark } from "@/components/auth/AuthShell";
+import { useApp } from "@/lib/app-state";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -23,16 +24,24 @@ export const Route = createFileRoute("/")({
 
 function Splash() {
   const navigate = useNavigate();
+  const { signedIn, seenOnboarding, sessionReady } = useApp();
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
     const fade = requestAnimationFrame(() => setReady(true));
-    const timer = window.setTimeout(() => navigate({ to: "/onboarding" }), 1200);
+    if (!sessionReady) {
+      return () => cancelAnimationFrame(fade);
+    }
+    const timer = window.setTimeout(() => {
+      if (signedIn) navigate({ to: "/home" });
+      else if (seenOnboarding) navigate({ to: "/login" });
+      else navigate({ to: "/onboarding" });
+    }, 1200);
     return () => {
       cancelAnimationFrame(fade);
       window.clearTimeout(timer);
     };
-  }, [navigate]);
+  }, [navigate, signedIn, seenOnboarding, sessionReady]);
 
   return (
     <BrandAtmosphere
@@ -51,9 +60,6 @@ function Splash() {
           <BrandLogoMark width={320} className="mx-auto" />
           <p className="mt-8 font-display text-[22px] leading-snug text-white">
             Your Properties, Fully Verified.
-          </p>
-          <p className="mt-3 w-full text-center text-[12px] tracking-[0.28em] text-white/65 uppercase">
-            Amenity Management
           </p>
         </div>
       </div>

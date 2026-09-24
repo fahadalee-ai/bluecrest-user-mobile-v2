@@ -11,7 +11,6 @@ import {
   inputClass,
 } from "@/components/ios";
 import { PhotoPicker } from "@/components/client/widgets";
-import { amenitiesFor, properties } from "@/data/bluecrest";
 import { useApp } from "@/lib/app-state";
 import type { RequestPriority } from "@/data/bluecrest";
 
@@ -26,15 +25,15 @@ export const Route = createFileRoute("/_tabs/request-new")({
 function NewRequest() {
   const navigate = useNavigate();
   const search = Route.useSearch();
-  const { addRequest } = useApp();
-  const [propertyId, setPropertyId] = useState(search.propertyId ?? properties[0]!.id);
+  const { addRequest, client, properties, amenities } = useApp();
+  const [propertyId, setPropertyId] = useState(search.propertyId ?? properties[0]?.id ?? "");
   const [amenityId, setAmenityId] = useState("");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [priority, setPriority] = useState<RequestPriority>("Standard");
   const [photos, setPhotos] = useState<string[]>([]);
 
-  const amenityOpts = amenitiesFor(propertyId);
+  const amenityOpts = amenities.filter((a) => a.propertyId === propertyId);
 
   const submit = () => {
     if (!title.trim() || !description.trim()) {
@@ -59,7 +58,7 @@ function NewRequest() {
         {
           id: `c-${Date.now()}`,
           from: "me",
-          sender: "Sarah Kim",
+          sender: client.name,
           text: description.trim(),
           time: "Just now",
         },

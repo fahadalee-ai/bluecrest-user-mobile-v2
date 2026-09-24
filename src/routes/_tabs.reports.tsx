@@ -2,7 +2,7 @@ import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { Card, Field, NavBar, Screen, SectionHeader, SelectField, inputClass } from "@/components/ios";
 import { DownloadButton } from "@/components/client/widgets";
-import { properties } from "@/data/bluecrest";
+import { useApp } from "@/lib/app-state";
 
 export const Route = createFileRoute("/_tabs/reports")({
   head: () => ({ meta: [{ title: "Reports & Service History — Bluecrest Client" }] }),
@@ -46,6 +46,7 @@ function ExportCard({
   description: string;
   filename: string;
 }) {
+  const { properties } = useApp();
   const [propertyId, setPropertyId] = useState("all");
   const [from, setFrom] = useState("2026-05-08");
   const [to, setTo] = useState("2026-08-06");

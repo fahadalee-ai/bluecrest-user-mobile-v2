@@ -80,6 +80,7 @@ function InspectionDetail() {
                 src: p.src,
                 label: p.label,
                 timestamp: p.timestamp,
+                context: `${property?.name} · ${amenity?.name} inspection`,
               }))}
             />
           </>

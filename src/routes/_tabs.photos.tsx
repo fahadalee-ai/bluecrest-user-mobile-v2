@@ -2,7 +2,14 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { EmptyState, NavBar, Screen, SelectField } from "@/components/ios";
 import { PhotoLightbox } from "@/components/client/widgets";
-import { amenities, inspectionPhotos, properties } from "@/data/bluecrest";
+import {
+  amenityById,
+  inspectionPhotos,
+  inspections,
+  propertyById,
+  withinDays,
+} from "@/data/bluecrest";
+import { useApp } from "@/lib/app-state";
 import { Images } from "lucide-react";
 
 export const Route = createFileRoute("/_tabs/photos")({
@@ -17,17 +24,22 @@ export const Route = createFileRoute("/_tabs/photos")({
 });
 
 function PhotoGallery() {
+  const { properties, amenities } = useApp();
   const search = Route.useSearch();
   const [propertyId, setPropertyId] = useState(search.propertyId ?? "all");
   const [amenityId, setAmenityId] = useState(search.amenityId ?? "all");
+  const [range, setRange] = useState("90");
   const [open, setOpen] = useState<(typeof inspectionPhotos)[number] | null>(null);
 
   const amenityOptions = amenities.filter((a) => propertyId === "all" || a.propertyId === propertyId);
-  const items = inspectionPhotos.filter(
-    (p) =>
+  const items = inspectionPhotos.filter((p) => {
+    const insp = inspections.find((i) => i.id === p.inspectionId);
+    return (
       (propertyId === "all" || p.propertyId === propertyId) &&
-      (amenityId === "all" || p.amenityId === amenityId),
-  );
+      (amenityId === "all" || p.amenityId === amenityId) &&
+      (!insp || withinDays(insp.dateIso, Number(range)))
+    );
+  });
 
   return (
     <>
@@ -53,6 +65,18 @@ function PhotoGallery() {
             options={[
               { value: "all", label: "All" },
               ...amenityOptions.map((a) => ({ value: a.id, label: a.name })),
+            ]}
+          />
+        </div>
+        <div className="mb-4">
+          <SelectField
+            label="Date range"
+            value={range}
+            onChange={setRange}
+            options={[
+              { value: "7", label: "Last 7 days" },
+              { value: "30", label: "Last 30 days" },
+              { value: "90", label: "Last 90 days" },
             ]}
           />
         </div>
@@ -82,6 +106,7 @@ function PhotoGallery() {
           src={open.src}
           label={open.label}
           timestamp={open.timestamp}
+          context={`${propertyById(open.propertyId)?.name} · ${amenityById(open.amenityId)?.name} inspection`}
           onClose={() => setOpen(null)}
         />
       )}

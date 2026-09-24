@@ -2,7 +2,6 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { Alert, Card, ListGroup, ListRow, NavBar, Screen } from "@/components/ios";
 import { IconTile } from "@/components/client/widgets";
-import { properties } from "@/data/bluecrest";
 import { useApp } from "@/lib/app-state";
 import {
   ChevronRight,
@@ -26,7 +25,7 @@ export const Route = createFileRoute("/_tabs/profile")({
 
 function Profile() {
   const navigate = useNavigate();
-  const { client, signOut } = useApp();
+  const { client, signOut, properties } = useApp();
   const [confirm, setConfirm] = useState(false);
 
   return (
@@ -64,6 +63,12 @@ function Profile() {
               trailing={<ChevronRight className="h-4 w-4 text-muted-foreground" />}
             />
           ))}
+          <ListRow
+            to="/property-new"
+            title="Add Property"
+            subtitle="Attach another building to this account"
+            trailing={<ChevronRight className="h-4 w-4 text-muted-foreground" />}
+          />
         </ListGroup>
 
         <ListGroup className="mb-4">

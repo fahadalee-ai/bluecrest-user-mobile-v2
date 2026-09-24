@@ -103,14 +103,20 @@ function Login() {
         <div className="flex items-center gap-3 pt-1">
           <span className="h-px flex-1 bg-[#093370]/12" />
           <span className="text-[12px] font-semibold tracking-wide text-[#093370]/45 uppercase">
-            Don&apos;t have access yet?
+            New to Bluecrest?
           </span>
           <span className="h-px flex-1 bg-[#093370]/12" />
         </div>
 
-        <AuthButton variant="ghost" onClick={() => navigate({ to: "/access" })}>
-          Learn How to Get Access
+        <AuthButton variant="ghost" onClick={() => navigate({ to: "/register" })}>
+          Create Account
         </AuthButton>
+
+        <p className="text-center text-[13px] text-[#093370]/50">
+          <Link to="/access" className="min-h-11 inline-flex items-center font-semibold text-[#0258B8]">
+            Learn how to get access
+          </Link>
+        </p>
       </div>
     </AuthShell>
   );

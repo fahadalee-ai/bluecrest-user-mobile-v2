@@ -65,8 +65,11 @@ function AccessScreen() {
         <p className="mt-1 text-[13px] leading-relaxed text-[#093370]/55">{brand.address}</p>
       </div>
 
-      <div className="mt-8">
-        <AuthButton onClick={() => navigate({ to: "/login" })}>Back to Sign In</AuthButton>
+      <div className="mt-8 space-y-3">
+        <AuthButton onClick={() => navigate({ to: "/register" })}>Create Account</AuthButton>
+        <AuthButton variant="ghost" onClick={() => navigate({ to: "/login" })}>
+          Back to Sign In
+        </AuthButton>
       </div>
     </AuthShell>
   );

@@ -51,7 +51,11 @@ function RequestsHub() {
         <SegmentedControl
           className="mb-4"
           value={tab}
-          onChange={(v) => setTab(v as typeof tab)}
+          onChange={(v) => {
+            const next = v as typeof tab;
+            setTab(next);
+            navigate({ to: "/requests", search: { tab: next }, replace: true });
+          }}
           options={[
             { value: "issues", label: "Issues" },
             { value: "requests", label: "Requests" },

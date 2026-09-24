@@ -1,18 +1,14 @@
 import { Link, createFileRoute, notFound } from "@tanstack/react-router";
 import { useState } from "react";
 import { Badge, Card, NavBar, Screen, SectionHeader } from "@/components/ios";
-import { amenities, inspectionPhotos, propertyById } from "@/data/bluecrest";
+import { inspectionPhotos } from "@/data/bluecrest";
+import { useApp } from "@/lib/app-state";
 import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_tabs/amenity/$amenityId")({
-  loader: ({ params }) => {
-    const a = amenities.find((x) => x.id === params.amenityId);
-    if (!a) throw notFound();
-    return { name: a.name };
-  },
-  head: ({ loaderData }) => ({
-    meta: [{ title: loaderData ? `${loaderData.name} — Bluecrest Client` : "Amenity" }],
+  head: () => ({
+    meta: [{ title: "Amenity — Bluecrest Client" }],
   }),
   notFoundComponent: () => (
     <Screen>
@@ -24,8 +20,10 @@ export const Route = createFileRoute("/_tabs/amenity/$amenityId")({
 
 function AmenityDetail() {
   const { amenityId } = Route.useParams();
-  const amenity = amenities.find((a) => a.id === amenityId)!;
-  const property = propertyById(amenity.propertyId);
+  const { amenities, properties } = useApp();
+  const amenity = amenities.find((a) => a.id === amenityId);
+  if (!amenity) throw notFound();
+  const property = properties.find((p) => p.id === amenity.propertyId);
   const [open, setOpen] = useState(false);
   const photos = inspectionPhotos.filter((p) => p.amenityId === amenityId);
   const maxCl = Math.max(...amenity.history.map((h) => h.chlorine), 4);

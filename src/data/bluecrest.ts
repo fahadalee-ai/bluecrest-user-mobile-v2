@@ -871,8 +871,8 @@ export const faqs = [
     a: "Billing is handled by Bluecrest Client Services — call the office or email clients@bluecrestamenity.com. For day-to-day service questions, message Dana Reyes from the Messages tab.",
   },
   {
-    q: "Why can't I add another property myself?",
-    a: "Client accounts are scoped to the properties in your service agreement. If you've added a new amenity or building, your Bluecrest representative will attach it to this account.",
+    q: "How do I add another property?",
+    a: "Open the Properties tab and tap + to add a building you manage. Bluecrest will confirm it against your service agreement. You can also message Dana Reyes if you need it attached right away.",
   },
 ];
 

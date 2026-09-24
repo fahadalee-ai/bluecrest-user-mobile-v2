@@ -1,14 +1,16 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { Badge, NavBar, PullToRefresh, Screen, SelectField } from "@/components/ios";
+import { Badge, EmptyState, NavBar, PullToRefresh, Screen, SelectField } from "@/components/ios";
+import { ClipboardCheck } from "lucide-react";
 import {
   amenityById,
   inspections,
-  properties,
   propertyById,
   resultLabel,
   resultTone,
+  withinDays,
 } from "@/data/bluecrest";
+import { useApp } from "@/lib/app-state";
 
 export const Route = createFileRoute("/_tabs/inspections")({
   head: () => ({
@@ -21,9 +23,14 @@ export const Route = createFileRoute("/_tabs/inspections")({
 });
 
 function InspectionsList() {
+  const { properties } = useApp();
   const [propertyId, setPropertyId] = useState("all");
   const [range, setRange] = useState("90");
-  const list = inspections.filter((i) => propertyId === "all" || i.propertyId === propertyId);
+  const list = inspections.filter(
+    (i) =>
+      (propertyId === "all" || i.propertyId === propertyId) &&
+      withinDays(i.dateIso, Number(range)),
+  );
 
   return (
     <>
@@ -31,9 +38,17 @@ function InspectionsList() {
         title="Inspections"
         back={false}
         trailing={
-          <Link to="/photos" className="min-h-11 px-2 text-[15px] font-semibold text-primary">
-            Gallery
-          </Link>
+          <div className="flex items-center">
+            <Link
+              to="/inspection-history"
+              className="min-h-11 px-2 text-[15px] font-semibold text-primary"
+            >
+              History
+            </Link>
+            <Link to="/photos" className="min-h-11 px-2 text-[15px] font-semibold text-primary">
+              Gallery
+            </Link>
+          </div>
         }
       />
       <Screen>
@@ -59,6 +74,13 @@ function InspectionsList() {
             ]}
           />
         </div>
+        {list.length === 0 ? (
+          <EmptyState
+            icon={<ClipboardCheck className="h-7 w-7" />}
+            title="No inspections in this range"
+            description="Try another property or a wider date range."
+          />
+        ) : (
         <div className="space-y-3">
           {list.map((insp) => {
             const prop = propertyById(insp.propertyId);
@@ -84,6 +106,7 @@ function InspectionsList() {
             );
           })}
         </div>
+        )}
       </Screen>
     </>
   );

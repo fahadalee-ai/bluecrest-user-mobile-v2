@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useRef, useState } from "react";
 import { AuthButton } from "@/components/auth/AuthShell";
 import { cn } from "@/lib/utils";
+import { useApp } from "@/lib/app-state";
 import inspectImg from "@/assets/site-soho-house.jpg";
 import equipmentImg from "@/assets/onboarding-equipment.jpg";
 import conciergeImg from "@/assets/onboarding-concierge.jpg";
@@ -46,9 +47,15 @@ const slides = [
 function Onboarding() {
   const [i, setI] = useState(0);
   const navigate = useNavigate();
+  const { markOnboardingSeen } = useApp();
   const startX = useRef<number | null>(null);
   const slide = slides[i]!;
   const last = i === slides.length - 1;
+
+  const goLogin = () => {
+    markOnboardingSeen();
+    navigate({ to: "/login" });
+  };
 
   const onTouchStart = (e: React.TouchEvent) => {
     startX.current = e.touches[0]?.clientX ?? null;
@@ -108,7 +115,7 @@ function Onboarding() {
           </span>
           <button
             type="button"
-            onClick={() => navigate({ to: "/login" })}
+            onClick={goLogin}
             className="px-2 text-[15px] font-semibold text-white/90 transition-colors duration-200"
             style={{ minHeight: "var(--touch-min)" }}
           >
@@ -138,7 +145,7 @@ function Onboarding() {
           ))}
         </div>
 
-        <AuthButton variant="light" onClick={() => (last ? navigate({ to: "/login" }) : setI(i + 1))}>
+        <AuthButton variant="light" onClick={() => (last ? goLogin() : setI(i + 1))}>
           {last ? "Get Started" : "Continue"}
         </AuthButton>
       </div>

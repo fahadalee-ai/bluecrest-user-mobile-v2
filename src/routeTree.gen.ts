@@ -15,30 +15,30 @@ import { Route as AccessRouteImport } from './routes/access'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
-import { Route as TabsAttendanceRouteImport } from './routes/_tabs.attendance'
-import { Route as TabsCameraRouteImport } from './routes/_tabs.camera'
-import { Route as TabsCaptureRouteImport } from './routes/_tabs.capture'
-import { Route as TabsCertificationsRouteImport } from './routes/_tabs.certifications'
-import { Route as TabsChatRouteImport } from './routes/_tabs.chat'
-import { Route as TabsComposeRouteImport } from './routes/_tabs.compose'
+import { Route as RegisterRouteImport } from './routes/register'
+import { Route as TabsChangePasswordRouteImport } from './routes/_tabs.change-password'
 import { Route as TabsEditProfileRouteImport } from './routes/_tabs.edit-profile'
 import { Route as TabsHelpRouteImport } from './routes/_tabs.help'
 import { Route as TabsHomeRouteImport } from './routes/_tabs.home'
-import { Route as TabsIncidentNewRouteImport } from './routes/_tabs.incident-new'
-import { Route as TabsIncidentsRouteImport } from './routes/_tabs.incidents'
+import { Route as TabsInspectionHistoryRouteImport } from './routes/_tabs.inspection-history'
+import { Route as TabsInspectionsRouteImport } from './routes/_tabs.inspections'
+import { Route as TabsMessagesRouteImport } from './routes/_tabs.messages'
 import { Route as TabsNotificationsRouteImport } from './routes/_tabs.notifications'
 import { Route as TabsPhotosRouteImport } from './routes/_tabs.photos'
 import { Route as TabsProfileRouteImport } from './routes/_tabs.profile'
-import { Route as TabsScheduleRouteImport } from './routes/_tabs.schedule'
+import { Route as TabsPropertiesRouteImport } from './routes/_tabs.properties'
+import { Route as TabsPropertyNewRouteImport } from './routes/_tabs.property-new'
+import { Route as TabsReportsRouteImport } from './routes/_tabs.reports'
+import { Route as TabsRequestNewRouteImport } from './routes/_tabs.request-new'
+import { Route as TabsRequestsRouteImport } from './routes/_tabs.requests'
 import { Route as TabsSettingsRouteImport } from './routes/_tabs.settings'
-import { Route as TabsSitesRouteImport } from './routes/_tabs.sites'
-import { Route as TabsTasksRouteImport } from './routes/_tabs.tasks'
-import { Route as TabsWaterHistoryRouteImport } from './routes/_tabs.water-history'
-import { Route as TabsWaterTestRouteImport } from './routes/_tabs.water-test'
-import { Route as TabsIncidentIncidentIdRouteImport } from './routes/_tabs.incident.$incidentId'
-import { Route as TabsSiteSiteIdRouteImport } from './routes/_tabs.site.$siteId'
-import { Route as TabsTaskTaskIdRouteImport } from './routes/_tabs.task.$taskId'
+import { Route as TabsAmenityAmenityIdRouteImport } from './routes/_tabs.amenity.$amenityId'
+import { Route as TabsInspectionInspectionIdRouteImport } from './routes/_tabs.inspection.$inspectionId'
+import { Route as TabsIssueIssueIdRouteImport } from './routes/_tabs.issue.$issueId'
+import { Route as TabsPropertyPropertyIdRouteImport } from './routes/_tabs.property.$propertyId'
+import { Route as TabsRequestRequestIdRouteImport } from './routes/_tabs.request.$requestId'
 import { Route as TabsThreadThreadIdRouteImport } from './routes/_tabs.thread.$threadId'
+import { Route as TabsWorkOrderWorkOrderIdRouteImport } from './routes/_tabs.work-order.$workOrderId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -69,34 +69,14 @@ const OnboardingRoute = OnboardingRouteImport.update({
   path: '/onboarding',
   getParentRoute: () => rootRouteImport,
 } as any)
-const TabsAttendanceRoute = TabsAttendanceRouteImport.update({
-  id: '/attendance',
-  path: '/attendance',
-  getParentRoute: () => TabsRoute,
+const RegisterRoute = RegisterRouteImport.update({
+  id: '/register',
+  path: '/register',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const TabsCameraRoute = TabsCameraRouteImport.update({
-  id: '/camera',
-  path: '/camera',
-  getParentRoute: () => TabsRoute,
-} as any)
-const TabsCaptureRoute = TabsCaptureRouteImport.update({
-  id: '/capture',
-  path: '/capture',
-  getParentRoute: () => TabsRoute,
-} as any)
-const TabsCertificationsRoute = TabsCertificationsRouteImport.update({
-  id: '/certifications',
-  path: '/certifications',
-  getParentRoute: () => TabsRoute,
-} as any)
-const TabsChatRoute = TabsChatRouteImport.update({
-  id: '/chat',
-  path: '/chat',
-  getParentRoute: () => TabsRoute,
-} as any)
-const TabsComposeRoute = TabsComposeRouteImport.update({
-  id: '/compose',
-  path: '/compose',
+const TabsChangePasswordRoute = TabsChangePasswordRouteImport.update({
+  id: '/change-password',
+  path: '/change-password',
   getParentRoute: () => TabsRoute,
 } as any)
 const TabsEditProfileRoute = TabsEditProfileRouteImport.update({
@@ -114,14 +94,19 @@ const TabsHomeRoute = TabsHomeRouteImport.update({
   path: '/home',
   getParentRoute: () => TabsRoute,
 } as any)
-const TabsIncidentNewRoute = TabsIncidentNewRouteImport.update({
-  id: '/incident-new',
-  path: '/incident-new',
+const TabsInspectionHistoryRoute = TabsInspectionHistoryRouteImport.update({
+  id: '/inspection-history',
+  path: '/inspection-history',
   getParentRoute: () => TabsRoute,
 } as any)
-const TabsIncidentsRoute = TabsIncidentsRouteImport.update({
-  id: '/incidents',
-  path: '/incidents',
+const TabsInspectionsRoute = TabsInspectionsRouteImport.update({
+  id: '/inspections',
+  path: '/inspections',
+  getParentRoute: () => TabsRoute,
+} as any)
+const TabsMessagesRoute = TabsMessagesRouteImport.update({
+  id: '/messages',
+  path: '/messages',
   getParentRoute: () => TabsRoute,
 } as any)
 const TabsNotificationsRoute = TabsNotificationsRouteImport.update({
@@ -139,9 +124,29 @@ const TabsProfileRoute = TabsProfileRouteImport.update({
   path: '/profile',
   getParentRoute: () => TabsRoute,
 } as any)
-const TabsScheduleRoute = TabsScheduleRouteImport.update({
-  id: '/schedule',
-  path: '/schedule',
+const TabsPropertiesRoute = TabsPropertiesRouteImport.update({
+  id: '/properties',
+  path: '/properties',
+  getParentRoute: () => TabsRoute,
+} as any)
+const TabsPropertyNewRoute = TabsPropertyNewRouteImport.update({
+  id: '/property-new',
+  path: '/property-new',
+  getParentRoute: () => TabsRoute,
+} as any)
+const TabsReportsRoute = TabsReportsRouteImport.update({
+  id: '/reports',
+  path: '/reports',
+  getParentRoute: () => TabsRoute,
+} as any)
+const TabsRequestNewRoute = TabsRequestNewRouteImport.update({
+  id: '/request-new',
+  path: '/request-new',
+  getParentRoute: () => TabsRoute,
+} as any)
+const TabsRequestsRoute = TabsRequestsRouteImport.update({
+  id: '/requests',
+  path: '/requests',
   getParentRoute: () => TabsRoute,
 } as any)
 const TabsSettingsRoute = TabsSettingsRouteImport.update({
@@ -149,39 +154,30 @@ const TabsSettingsRoute = TabsSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => TabsRoute,
 } as any)
-const TabsSitesRoute = TabsSitesRouteImport.update({
-  id: '/sites',
-  path: '/sites',
+const TabsAmenityAmenityIdRoute = TabsAmenityAmenityIdRouteImport.update({
+  id: '/amenity/$amenityId',
+  path: '/amenity/$amenityId',
   getParentRoute: () => TabsRoute,
 } as any)
-const TabsTasksRoute = TabsTasksRouteImport.update({
-  id: '/tasks',
-  path: '/tasks',
+const TabsInspectionInspectionIdRoute =
+  TabsInspectionInspectionIdRouteImport.update({
+    id: '/inspection/$inspectionId',
+    path: '/inspection/$inspectionId',
+    getParentRoute: () => TabsRoute,
+  } as any)
+const TabsIssueIssueIdRoute = TabsIssueIssueIdRouteImport.update({
+  id: '/issue/$issueId',
+  path: '/issue/$issueId',
   getParentRoute: () => TabsRoute,
 } as any)
-const TabsWaterHistoryRoute = TabsWaterHistoryRouteImport.update({
-  id: '/water-history',
-  path: '/water-history',
+const TabsPropertyPropertyIdRoute = TabsPropertyPropertyIdRouteImport.update({
+  id: '/property/$propertyId',
+  path: '/property/$propertyId',
   getParentRoute: () => TabsRoute,
 } as any)
-const TabsWaterTestRoute = TabsWaterTestRouteImport.update({
-  id: '/water-test',
-  path: '/water-test',
-  getParentRoute: () => TabsRoute,
-} as any)
-const TabsIncidentIncidentIdRoute = TabsIncidentIncidentIdRouteImport.update({
-  id: '/incident/$incidentId',
-  path: '/incident/$incidentId',
-  getParentRoute: () => TabsRoute,
-} as any)
-const TabsSiteSiteIdRoute = TabsSiteSiteIdRouteImport.update({
-  id: '/site/$siteId',
-  path: '/site/$siteId',
-  getParentRoute: () => TabsRoute,
-} as any)
-const TabsTaskTaskIdRoute = TabsTaskTaskIdRouteImport.update({
-  id: '/task/$taskId',
-  path: '/task/$taskId',
+const TabsRequestRequestIdRoute = TabsRequestRequestIdRouteImport.update({
+  id: '/request/$requestId',
+  path: '/request/$requestId',
   getParentRoute: () => TabsRoute,
 } as any)
 const TabsThreadThreadIdRoute = TabsThreadThreadIdRouteImport.update({
@@ -189,6 +185,12 @@ const TabsThreadThreadIdRoute = TabsThreadThreadIdRouteImport.update({
   path: '/thread/$threadId',
   getParentRoute: () => TabsRoute,
 } as any)
+const TabsWorkOrderWorkOrderIdRoute =
+  TabsWorkOrderWorkOrderIdRouteImport.update({
+    id: '/work-order/$workOrderId',
+    path: '/work-order/$workOrderId',
+    getParentRoute: () => TabsRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -196,30 +198,30 @@ export interface FileRoutesByFullPath {
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRoute
-  '/attendance': typeof TabsAttendanceRoute
-  '/camera': typeof TabsCameraRoute
-  '/capture': typeof TabsCaptureRoute
-  '/certifications': typeof TabsCertificationsRoute
-  '/chat': typeof TabsChatRoute
-  '/compose': typeof TabsComposeRoute
+  '/register': typeof RegisterRoute
+  '/change-password': typeof TabsChangePasswordRoute
   '/edit-profile': typeof TabsEditProfileRoute
   '/help': typeof TabsHelpRoute
   '/home': typeof TabsHomeRoute
-  '/incident-new': typeof TabsIncidentNewRoute
-  '/incidents': typeof TabsIncidentsRoute
+  '/inspection-history': typeof TabsInspectionHistoryRoute
+  '/inspections': typeof TabsInspectionsRoute
+  '/messages': typeof TabsMessagesRoute
   '/notifications': typeof TabsNotificationsRoute
   '/photos': typeof TabsPhotosRoute
   '/profile': typeof TabsProfileRoute
-  '/schedule': typeof TabsScheduleRoute
+  '/properties': typeof TabsPropertiesRoute
+  '/property-new': typeof TabsPropertyNewRoute
+  '/reports': typeof TabsReportsRoute
+  '/request-new': typeof TabsRequestNewRoute
+  '/requests': typeof TabsRequestsRoute
   '/settings': typeof TabsSettingsRoute
-  '/sites': typeof TabsSitesRoute
-  '/tasks': typeof TabsTasksRoute
-  '/water-history': typeof TabsWaterHistoryRoute
-  '/water-test': typeof TabsWaterTestRoute
-  '/incident/$incidentId': typeof TabsIncidentIncidentIdRoute
-  '/site/$siteId': typeof TabsSiteSiteIdRoute
-  '/task/$taskId': typeof TabsTaskTaskIdRoute
+  '/amenity/$amenityId': typeof TabsAmenityAmenityIdRoute
+  '/inspection/$inspectionId': typeof TabsInspectionInspectionIdRoute
+  '/issue/$issueId': typeof TabsIssueIssueIdRoute
+  '/property/$propertyId': typeof TabsPropertyPropertyIdRoute
+  '/request/$requestId': typeof TabsRequestRequestIdRoute
   '/thread/$threadId': typeof TabsThreadThreadIdRoute
+  '/work-order/$workOrderId': typeof TabsWorkOrderWorkOrderIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -227,30 +229,30 @@ export interface FileRoutesByTo {
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRoute
-  '/attendance': typeof TabsAttendanceRoute
-  '/camera': typeof TabsCameraRoute
-  '/capture': typeof TabsCaptureRoute
-  '/certifications': typeof TabsCertificationsRoute
-  '/chat': typeof TabsChatRoute
-  '/compose': typeof TabsComposeRoute
+  '/register': typeof RegisterRoute
+  '/change-password': typeof TabsChangePasswordRoute
   '/edit-profile': typeof TabsEditProfileRoute
   '/help': typeof TabsHelpRoute
   '/home': typeof TabsHomeRoute
-  '/incident-new': typeof TabsIncidentNewRoute
-  '/incidents': typeof TabsIncidentsRoute
+  '/inspection-history': typeof TabsInspectionHistoryRoute
+  '/inspections': typeof TabsInspectionsRoute
+  '/messages': typeof TabsMessagesRoute
   '/notifications': typeof TabsNotificationsRoute
   '/photos': typeof TabsPhotosRoute
   '/profile': typeof TabsProfileRoute
-  '/schedule': typeof TabsScheduleRoute
+  '/properties': typeof TabsPropertiesRoute
+  '/property-new': typeof TabsPropertyNewRoute
+  '/reports': typeof TabsReportsRoute
+  '/request-new': typeof TabsRequestNewRoute
+  '/requests': typeof TabsRequestsRoute
   '/settings': typeof TabsSettingsRoute
-  '/sites': typeof TabsSitesRoute
-  '/tasks': typeof TabsTasksRoute
-  '/water-history': typeof TabsWaterHistoryRoute
-  '/water-test': typeof TabsWaterTestRoute
-  '/incident/$incidentId': typeof TabsIncidentIncidentIdRoute
-  '/site/$siteId': typeof TabsSiteSiteIdRoute
-  '/task/$taskId': typeof TabsTaskTaskIdRoute
+  '/amenity/$amenityId': typeof TabsAmenityAmenityIdRoute
+  '/inspection/$inspectionId': typeof TabsInspectionInspectionIdRoute
+  '/issue/$issueId': typeof TabsIssueIssueIdRoute
+  '/property/$propertyId': typeof TabsPropertyPropertyIdRoute
+  '/request/$requestId': typeof TabsRequestRequestIdRoute
   '/thread/$threadId': typeof TabsThreadThreadIdRoute
+  '/work-order/$workOrderId': typeof TabsWorkOrderWorkOrderIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -260,30 +262,30 @@ export interface FileRoutesById {
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRoute
-  '/_tabs/attendance': typeof TabsAttendanceRoute
-  '/_tabs/camera': typeof TabsCameraRoute
-  '/_tabs/capture': typeof TabsCaptureRoute
-  '/_tabs/certifications': typeof TabsCertificationsRoute
-  '/_tabs/chat': typeof TabsChatRoute
-  '/_tabs/compose': typeof TabsComposeRoute
+  '/register': typeof RegisterRoute
+  '/_tabs/change-password': typeof TabsChangePasswordRoute
   '/_tabs/edit-profile': typeof TabsEditProfileRoute
   '/_tabs/help': typeof TabsHelpRoute
   '/_tabs/home': typeof TabsHomeRoute
-  '/_tabs/incident-new': typeof TabsIncidentNewRoute
-  '/_tabs/incidents': typeof TabsIncidentsRoute
+  '/_tabs/inspection-history': typeof TabsInspectionHistoryRoute
+  '/_tabs/inspections': typeof TabsInspectionsRoute
+  '/_tabs/messages': typeof TabsMessagesRoute
   '/_tabs/notifications': typeof TabsNotificationsRoute
   '/_tabs/photos': typeof TabsPhotosRoute
   '/_tabs/profile': typeof TabsProfileRoute
-  '/_tabs/schedule': typeof TabsScheduleRoute
+  '/_tabs/properties': typeof TabsPropertiesRoute
+  '/_tabs/property-new': typeof TabsPropertyNewRoute
+  '/_tabs/reports': typeof TabsReportsRoute
+  '/_tabs/request-new': typeof TabsRequestNewRoute
+  '/_tabs/requests': typeof TabsRequestsRoute
   '/_tabs/settings': typeof TabsSettingsRoute
-  '/_tabs/sites': typeof TabsSitesRoute
-  '/_tabs/tasks': typeof TabsTasksRoute
-  '/_tabs/water-history': typeof TabsWaterHistoryRoute
-  '/_tabs/water-test': typeof TabsWaterTestRoute
-  '/_tabs/incident/$incidentId': typeof TabsIncidentIncidentIdRoute
-  '/_tabs/site/$siteId': typeof TabsSiteSiteIdRoute
-  '/_tabs/task/$taskId': typeof TabsTaskTaskIdRoute
+  '/_tabs/amenity/$amenityId': typeof TabsAmenityAmenityIdRoute
+  '/_tabs/inspection/$inspectionId': typeof TabsInspectionInspectionIdRoute
+  '/_tabs/issue/$issueId': typeof TabsIssueIssueIdRoute
+  '/_tabs/property/$propertyId': typeof TabsPropertyPropertyIdRoute
+  '/_tabs/request/$requestId': typeof TabsRequestRequestIdRoute
   '/_tabs/thread/$threadId': typeof TabsThreadThreadIdRoute
+  '/_tabs/work-order/$workOrderId': typeof TabsWorkOrderWorkOrderIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -293,30 +295,30 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/login'
     | '/onboarding'
-    | '/attendance'
-    | '/camera'
-    | '/capture'
-    | '/certifications'
-    | '/chat'
-    | '/compose'
+    | '/register'
+    | '/change-password'
     | '/edit-profile'
     | '/help'
     | '/home'
-    | '/incident-new'
-    | '/incidents'
+    | '/inspection-history'
+    | '/inspections'
+    | '/messages'
     | '/notifications'
     | '/photos'
     | '/profile'
-    | '/schedule'
+    | '/properties'
+    | '/property-new'
+    | '/reports'
+    | '/request-new'
+    | '/requests'
     | '/settings'
-    | '/sites'
-    | '/tasks'
-    | '/water-history'
-    | '/water-test'
-    | '/incident/$incidentId'
-    | '/site/$siteId'
-    | '/task/$taskId'
+    | '/amenity/$amenityId'
+    | '/inspection/$inspectionId'
+    | '/issue/$issueId'
+    | '/property/$propertyId'
+    | '/request/$requestId'
     | '/thread/$threadId'
+    | '/work-order/$workOrderId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -324,30 +326,30 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/login'
     | '/onboarding'
-    | '/attendance'
-    | '/camera'
-    | '/capture'
-    | '/certifications'
-    | '/chat'
-    | '/compose'
+    | '/register'
+    | '/change-password'
     | '/edit-profile'
     | '/help'
     | '/home'
-    | '/incident-new'
-    | '/incidents'
+    | '/inspection-history'
+    | '/inspections'
+    | '/messages'
     | '/notifications'
     | '/photos'
     | '/profile'
-    | '/schedule'
+    | '/properties'
+    | '/property-new'
+    | '/reports'
+    | '/request-new'
+    | '/requests'
     | '/settings'
-    | '/sites'
-    | '/tasks'
-    | '/water-history'
-    | '/water-test'
-    | '/incident/$incidentId'
-    | '/site/$siteId'
-    | '/task/$taskId'
+    | '/amenity/$amenityId'
+    | '/inspection/$inspectionId'
+    | '/issue/$issueId'
+    | '/property/$propertyId'
+    | '/request/$requestId'
     | '/thread/$threadId'
+    | '/work-order/$workOrderId'
   id:
     | '__root__'
     | '/'
@@ -356,30 +358,30 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/login'
     | '/onboarding'
-    | '/_tabs/attendance'
-    | '/_tabs/camera'
-    | '/_tabs/capture'
-    | '/_tabs/certifications'
-    | '/_tabs/chat'
-    | '/_tabs/compose'
+    | '/register'
+    | '/_tabs/change-password'
     | '/_tabs/edit-profile'
     | '/_tabs/help'
     | '/_tabs/home'
-    | '/_tabs/incident-new'
-    | '/_tabs/incidents'
+    | '/_tabs/inspection-history'
+    | '/_tabs/inspections'
+    | '/_tabs/messages'
     | '/_tabs/notifications'
     | '/_tabs/photos'
     | '/_tabs/profile'
-    | '/_tabs/schedule'
+    | '/_tabs/properties'
+    | '/_tabs/property-new'
+    | '/_tabs/reports'
+    | '/_tabs/request-new'
+    | '/_tabs/requests'
     | '/_tabs/settings'
-    | '/_tabs/sites'
-    | '/_tabs/tasks'
-    | '/_tabs/water-history'
-    | '/_tabs/water-test'
-    | '/_tabs/incident/$incidentId'
-    | '/_tabs/site/$siteId'
-    | '/_tabs/task/$taskId'
+    | '/_tabs/amenity/$amenityId'
+    | '/_tabs/inspection/$inspectionId'
+    | '/_tabs/issue/$issueId'
+    | '/_tabs/property/$propertyId'
+    | '/_tabs/request/$requestId'
     | '/_tabs/thread/$threadId'
+    | '/_tabs/work-order/$workOrderId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -389,6 +391,7 @@ export interface RootRouteChildren {
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   LoginRoute: typeof LoginRoute
   OnboardingRoute: typeof OnboardingRoute
+  RegisterRoute: typeof RegisterRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -435,46 +438,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OnboardingRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_tabs/attendance': {
-      id: '/_tabs/attendance'
-      path: '/attendance'
-      fullPath: '/attendance'
-      preLoaderRoute: typeof TabsAttendanceRouteImport
-      parentRoute: typeof TabsRoute
+    '/register': {
+      id: '/register'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof RegisterRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_tabs/camera': {
-      id: '/_tabs/camera'
-      path: '/camera'
-      fullPath: '/camera'
-      preLoaderRoute: typeof TabsCameraRouteImport
-      parentRoute: typeof TabsRoute
-    }
-    '/_tabs/capture': {
-      id: '/_tabs/capture'
-      path: '/capture'
-      fullPath: '/capture'
-      preLoaderRoute: typeof TabsCaptureRouteImport
-      parentRoute: typeof TabsRoute
-    }
-    '/_tabs/certifications': {
-      id: '/_tabs/certifications'
-      path: '/certifications'
-      fullPath: '/certifications'
-      preLoaderRoute: typeof TabsCertificationsRouteImport
-      parentRoute: typeof TabsRoute
-    }
-    '/_tabs/chat': {
-      id: '/_tabs/chat'
-      path: '/chat'
-      fullPath: '/chat'
-      preLoaderRoute: typeof TabsChatRouteImport
-      parentRoute: typeof TabsRoute
-    }
-    '/_tabs/compose': {
-      id: '/_tabs/compose'
-      path: '/compose'
-      fullPath: '/compose'
-      preLoaderRoute: typeof TabsComposeRouteImport
+    '/_tabs/change-password': {
+      id: '/_tabs/change-password'
+      path: '/change-password'
+      fullPath: '/change-password'
+      preLoaderRoute: typeof TabsChangePasswordRouteImport
       parentRoute: typeof TabsRoute
     }
     '/_tabs/edit-profile': {
@@ -498,18 +473,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TabsHomeRouteImport
       parentRoute: typeof TabsRoute
     }
-    '/_tabs/incident-new': {
-      id: '/_tabs/incident-new'
-      path: '/incident-new'
-      fullPath: '/incident-new'
-      preLoaderRoute: typeof TabsIncidentNewRouteImport
+    '/_tabs/inspection-history': {
+      id: '/_tabs/inspection-history'
+      path: '/inspection-history'
+      fullPath: '/inspection-history'
+      preLoaderRoute: typeof TabsInspectionHistoryRouteImport
       parentRoute: typeof TabsRoute
     }
-    '/_tabs/incidents': {
-      id: '/_tabs/incidents'
-      path: '/incidents'
-      fullPath: '/incidents'
-      preLoaderRoute: typeof TabsIncidentsRouteImport
+    '/_tabs/inspections': {
+      id: '/_tabs/inspections'
+      path: '/inspections'
+      fullPath: '/inspections'
+      preLoaderRoute: typeof TabsInspectionsRouteImport
+      parentRoute: typeof TabsRoute
+    }
+    '/_tabs/messages': {
+      id: '/_tabs/messages'
+      path: '/messages'
+      fullPath: '/messages'
+      preLoaderRoute: typeof TabsMessagesRouteImport
       parentRoute: typeof TabsRoute
     }
     '/_tabs/notifications': {
@@ -533,11 +515,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TabsProfileRouteImport
       parentRoute: typeof TabsRoute
     }
-    '/_tabs/schedule': {
-      id: '/_tabs/schedule'
-      path: '/schedule'
-      fullPath: '/schedule'
-      preLoaderRoute: typeof TabsScheduleRouteImport
+    '/_tabs/properties': {
+      id: '/_tabs/properties'
+      path: '/properties'
+      fullPath: '/properties'
+      preLoaderRoute: typeof TabsPropertiesRouteImport
+      parentRoute: typeof TabsRoute
+    }
+    '/_tabs/property-new': {
+      id: '/_tabs/property-new'
+      path: '/property-new'
+      fullPath: '/property-new'
+      preLoaderRoute: typeof TabsPropertyNewRouteImport
+      parentRoute: typeof TabsRoute
+    }
+    '/_tabs/reports': {
+      id: '/_tabs/reports'
+      path: '/reports'
+      fullPath: '/reports'
+      preLoaderRoute: typeof TabsReportsRouteImport
+      parentRoute: typeof TabsRoute
+    }
+    '/_tabs/request-new': {
+      id: '/_tabs/request-new'
+      path: '/request-new'
+      fullPath: '/request-new'
+      preLoaderRoute: typeof TabsRequestNewRouteImport
+      parentRoute: typeof TabsRoute
+    }
+    '/_tabs/requests': {
+      id: '/_tabs/requests'
+      path: '/requests'
+      fullPath: '/requests'
+      preLoaderRoute: typeof TabsRequestsRouteImport
       parentRoute: typeof TabsRoute
     }
     '/_tabs/settings': {
@@ -547,53 +557,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TabsSettingsRouteImport
       parentRoute: typeof TabsRoute
     }
-    '/_tabs/sites': {
-      id: '/_tabs/sites'
-      path: '/sites'
-      fullPath: '/sites'
-      preLoaderRoute: typeof TabsSitesRouteImport
+    '/_tabs/amenity/$amenityId': {
+      id: '/_tabs/amenity/$amenityId'
+      path: '/amenity/$amenityId'
+      fullPath: '/amenity/$amenityId'
+      preLoaderRoute: typeof TabsAmenityAmenityIdRouteImport
       parentRoute: typeof TabsRoute
     }
-    '/_tabs/tasks': {
-      id: '/_tabs/tasks'
-      path: '/tasks'
-      fullPath: '/tasks'
-      preLoaderRoute: typeof TabsTasksRouteImport
+    '/_tabs/inspection/$inspectionId': {
+      id: '/_tabs/inspection/$inspectionId'
+      path: '/inspection/$inspectionId'
+      fullPath: '/inspection/$inspectionId'
+      preLoaderRoute: typeof TabsInspectionInspectionIdRouteImport
       parentRoute: typeof TabsRoute
     }
-    '/_tabs/water-history': {
-      id: '/_tabs/water-history'
-      path: '/water-history'
-      fullPath: '/water-history'
-      preLoaderRoute: typeof TabsWaterHistoryRouteImport
+    '/_tabs/issue/$issueId': {
+      id: '/_tabs/issue/$issueId'
+      path: '/issue/$issueId'
+      fullPath: '/issue/$issueId'
+      preLoaderRoute: typeof TabsIssueIssueIdRouteImport
       parentRoute: typeof TabsRoute
     }
-    '/_tabs/water-test': {
-      id: '/_tabs/water-test'
-      path: '/water-test'
-      fullPath: '/water-test'
-      preLoaderRoute: typeof TabsWaterTestRouteImport
+    '/_tabs/property/$propertyId': {
+      id: '/_tabs/property/$propertyId'
+      path: '/property/$propertyId'
+      fullPath: '/property/$propertyId'
+      preLoaderRoute: typeof TabsPropertyPropertyIdRouteImport
       parentRoute: typeof TabsRoute
     }
-    '/_tabs/incident/$incidentId': {
-      id: '/_tabs/incident/$incidentId'
-      path: '/incident/$incidentId'
-      fullPath: '/incident/$incidentId'
-      preLoaderRoute: typeof TabsIncidentIncidentIdRouteImport
-      parentRoute: typeof TabsRoute
-    }
-    '/_tabs/site/$siteId': {
-      id: '/_tabs/site/$siteId'
-      path: '/site/$siteId'
-      fullPath: '/site/$siteId'
-      preLoaderRoute: typeof TabsSiteSiteIdRouteImport
-      parentRoute: typeof TabsRoute
-    }
-    '/_tabs/task/$taskId': {
-      id: '/_tabs/task/$taskId'
-      path: '/task/$taskId'
-      fullPath: '/task/$taskId'
-      preLoaderRoute: typeof TabsTaskTaskIdRouteImport
+    '/_tabs/request/$requestId': {
+      id: '/_tabs/request/$requestId'
+      path: '/request/$requestId'
+      fullPath: '/request/$requestId'
+      preLoaderRoute: typeof TabsRequestRequestIdRouteImport
       parentRoute: typeof TabsRoute
     }
     '/_tabs/thread/$threadId': {
@@ -603,61 +599,66 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TabsThreadThreadIdRouteImport
       parentRoute: typeof TabsRoute
     }
+    '/_tabs/work-order/$workOrderId': {
+      id: '/_tabs/work-order/$workOrderId'
+      path: '/work-order/$workOrderId'
+      fullPath: '/work-order/$workOrderId'
+      preLoaderRoute: typeof TabsWorkOrderWorkOrderIdRouteImport
+      parentRoute: typeof TabsRoute
+    }
   }
 }
 
 interface TabsRouteChildren {
-  TabsAttendanceRoute: typeof TabsAttendanceRoute
-  TabsCameraRoute: typeof TabsCameraRoute
-  TabsCaptureRoute: typeof TabsCaptureRoute
-  TabsCertificationsRoute: typeof TabsCertificationsRoute
-  TabsChatRoute: typeof TabsChatRoute
-  TabsComposeRoute: typeof TabsComposeRoute
+  TabsChangePasswordRoute: typeof TabsChangePasswordRoute
   TabsEditProfileRoute: typeof TabsEditProfileRoute
   TabsHelpRoute: typeof TabsHelpRoute
   TabsHomeRoute: typeof TabsHomeRoute
-  TabsIncidentNewRoute: typeof TabsIncidentNewRoute
-  TabsIncidentsRoute: typeof TabsIncidentsRoute
+  TabsInspectionHistoryRoute: typeof TabsInspectionHistoryRoute
+  TabsInspectionsRoute: typeof TabsInspectionsRoute
+  TabsMessagesRoute: typeof TabsMessagesRoute
   TabsNotificationsRoute: typeof TabsNotificationsRoute
   TabsPhotosRoute: typeof TabsPhotosRoute
   TabsProfileRoute: typeof TabsProfileRoute
-  TabsScheduleRoute: typeof TabsScheduleRoute
+  TabsPropertiesRoute: typeof TabsPropertiesRoute
+  TabsPropertyNewRoute: typeof TabsPropertyNewRoute
+  TabsReportsRoute: typeof TabsReportsRoute
+  TabsRequestNewRoute: typeof TabsRequestNewRoute
+  TabsRequestsRoute: typeof TabsRequestsRoute
   TabsSettingsRoute: typeof TabsSettingsRoute
-  TabsSitesRoute: typeof TabsSitesRoute
-  TabsTasksRoute: typeof TabsTasksRoute
-  TabsWaterHistoryRoute: typeof TabsWaterHistoryRoute
-  TabsWaterTestRoute: typeof TabsWaterTestRoute
-  TabsIncidentIncidentIdRoute: typeof TabsIncidentIncidentIdRoute
-  TabsSiteSiteIdRoute: typeof TabsSiteSiteIdRoute
-  TabsTaskTaskIdRoute: typeof TabsTaskTaskIdRoute
+  TabsAmenityAmenityIdRoute: typeof TabsAmenityAmenityIdRoute
+  TabsInspectionInspectionIdRoute: typeof TabsInspectionInspectionIdRoute
+  TabsIssueIssueIdRoute: typeof TabsIssueIssueIdRoute
+  TabsPropertyPropertyIdRoute: typeof TabsPropertyPropertyIdRoute
+  TabsRequestRequestIdRoute: typeof TabsRequestRequestIdRoute
   TabsThreadThreadIdRoute: typeof TabsThreadThreadIdRoute
+  TabsWorkOrderWorkOrderIdRoute: typeof TabsWorkOrderWorkOrderIdRoute
 }
 
 const TabsRouteChildren: TabsRouteChildren = {
-  TabsAttendanceRoute: TabsAttendanceRoute,
-  TabsCameraRoute: TabsCameraRoute,
-  TabsCaptureRoute: TabsCaptureRoute,
-  TabsCertificationsRoute: TabsCertificationsRoute,
-  TabsChatRoute: TabsChatRoute,
-  TabsComposeRoute: TabsComposeRoute,
+  TabsChangePasswordRoute: TabsChangePasswordRoute,
   TabsEditProfileRoute: TabsEditProfileRoute,
   TabsHelpRoute: TabsHelpRoute,
   TabsHomeRoute: TabsHomeRoute,
-  TabsIncidentNewRoute: TabsIncidentNewRoute,
-  TabsIncidentsRoute: TabsIncidentsRoute,
+  TabsInspectionHistoryRoute: TabsInspectionHistoryRoute,
+  TabsInspectionsRoute: TabsInspectionsRoute,
+  TabsMessagesRoute: TabsMessagesRoute,
   TabsNotificationsRoute: TabsNotificationsRoute,
   TabsPhotosRoute: TabsPhotosRoute,
   TabsProfileRoute: TabsProfileRoute,
-  TabsScheduleRoute: TabsScheduleRoute,
+  TabsPropertiesRoute: TabsPropertiesRoute,
+  TabsPropertyNewRoute: TabsPropertyNewRoute,
+  TabsReportsRoute: TabsReportsRoute,
+  TabsRequestNewRoute: TabsRequestNewRoute,
+  TabsRequestsRoute: TabsRequestsRoute,
   TabsSettingsRoute: TabsSettingsRoute,
-  TabsSitesRoute: TabsSitesRoute,
-  TabsTasksRoute: TabsTasksRoute,
-  TabsWaterHistoryRoute: TabsWaterHistoryRoute,
-  TabsWaterTestRoute: TabsWaterTestRoute,
-  TabsIncidentIncidentIdRoute: TabsIncidentIncidentIdRoute,
-  TabsSiteSiteIdRoute: TabsSiteSiteIdRoute,
-  TabsTaskTaskIdRoute: TabsTaskTaskIdRoute,
+  TabsAmenityAmenityIdRoute: TabsAmenityAmenityIdRoute,
+  TabsInspectionInspectionIdRoute: TabsInspectionInspectionIdRoute,
+  TabsIssueIssueIdRoute: TabsIssueIssueIdRoute,
+  TabsPropertyPropertyIdRoute: TabsPropertyPropertyIdRoute,
+  TabsRequestRequestIdRoute: TabsRequestRequestIdRoute,
   TabsThreadThreadIdRoute: TabsThreadThreadIdRoute,
+  TabsWorkOrderWorkOrderIdRoute: TabsWorkOrderWorkOrderIdRoute,
 }
 
 const TabsRouteWithChildren = TabsRoute._addFileChildren(TabsRouteChildren)
@@ -669,6 +670,7 @@ const rootRouteChildren: RootRouteChildren = {
   ForgotPasswordRoute: ForgotPasswordRoute,
   LoginRoute: LoginRoute,
   OnboardingRoute: OnboardingRoute,
+  RegisterRoute: RegisterRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
